@@ -1,0 +1,264 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../res/colors.dart';
+import '../res/styles.dart';
+import '../view_models/home_controller.dart';
+
+class UpdateDataSheet extends GetView<HomeController> {
+  const UpdateDataSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Local text controllers to handle input editing before saving
+    // initializing them with current controller values
+    final weightController = TextEditingController(text: controller.weight.value.toString());
+    final heightController = TextEditingController(text: controller.height.value.toInt().toString());
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Drag Handle
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Header
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "Update My Data",
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => Get.back(),
+                icon: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close, size: 18, color: AppColors.textSecondary),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Unit Toggle
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Obx(() => Row(
+              children: [
+                _buildToggleOption(
+                  "Metric (kg/cm)", 
+                  controller.selectedUnit.value == LengthUnit.cm, 
+                  () => controller.selectedUnit.value = LengthUnit.cm
+                ),
+                _buildToggleOption(
+                  "Imperial (lbs/ft)", 
+                  controller.selectedUnit.value == LengthUnit.ft, 
+                  () => controller.selectedUnit.value = LengthUnit.ft
+                ),
+              ],
+            )),
+          ),
+          const SizedBox(height: 20),
+
+          // Inputs
+          Row(
+            children: [
+              // Weight Input
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.weightCard,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.monitor_weight_outlined, size: 16, color: AppColors.primary),
+                          ),
+                          const SizedBox(width: 8),
+                          Text("Current Weight", style: AppStyles.inputLabel.copyWith(fontSize: 12)),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: weightController,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              style: AppStyles.inputValue.copyWith(fontSize: 24),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                          ),
+                          Text("KG", style: AppStyles.inputUnit),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 15),
+              // Height Input
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.heightCard,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.height_rounded, size: 16, color: AppColors.secondaryDark),
+                          ),
+                          const SizedBox(width: 8),
+                          Text("Current Height", style: AppStyles.inputLabel.copyWith(fontSize: 12)),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: heightController,
+                              keyboardType: TextInputType.number,
+                              style: AppStyles.inputValue.copyWith(fontSize: 24),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                          ),
+                          Text("CM", style: AppStyles.inputUnit),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+
+          // Save Button
+          ElevatedButton.icon(
+            onPressed: () {
+              // Save logic
+              if (weightController.text.isNotEmpty) {
+                controller.weight.value = double.parse(weightController.text);
+              }
+              if (heightController.text.isNotEmpty) {
+                controller.height.value = double.parse(heightController.text);
+              }
+              Get.back();
+              Get.snackbar("Success", "Data updated successfully", 
+                backgroundColor: AppColors.success, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, margin: const EdgeInsets.all(20));
+            },
+            icon: const Icon(Icons.save_rounded, color: Colors.white),
+            label: Text("Save Changes", style: AppStyles.buttonText),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.actionButton,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 4,
+              shadowColor: AppColors.actionButton.withOpacity(0.4),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Text(
+              "Last updated 2 days ago",
+              style: GoogleFonts.poppins(color: AppColors.textSecondary, fontSize: 12),
+            ),
+          ),
+          const SizedBox(height: 10), // Bottom safe area spacing
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToggleOption(String text, bool isSelected, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: isSelected ? [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )
+            ] : null,
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
