@@ -19,15 +19,15 @@ class HeightSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(25),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            color: AppColors.darkBlue.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -40,28 +40,28 @@ class HeightSlider extends StatelessWidget {
               GestureDetector(
                 onTap: onToggleUnit,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppColors.background,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
+                    border: Border.all(color: AppColors.lightBlue.withOpacity(0.2)),
                   ),
                   child: Row(
                     children: [
                       Text("cm", style: TextStyle(
-                          color: isCm ? AppColors.textPrimary : AppColors.textSecondary.withOpacity(0.5),
-                          fontWeight: FontWeight.bold)),
-                      const Text(" / ", style: TextStyle(color: AppColors.textSecondary)),
+                          color: isCm ? AppColors.darkBlue : AppColors.textSecondary.withOpacity(0.5),
+                          fontWeight: FontWeight.bold, fontSize: 14)),
+                      const Text(" / ", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                       Text("ft", style: TextStyle(
-                          color: !isCm ? AppColors.textPrimary : AppColors.textSecondary.withOpacity(0.5),
-                          fontWeight: FontWeight.bold)),
+                          color: !isCm ? AppColors.darkBlue : AppColors.textSecondary.withOpacity(0.5),
+                          fontWeight: FontWeight.bold, fontSize: 14)),
                     ],
                   ),
                 ),
               )
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -71,20 +71,82 @@ class HeightSlider extends StatelessWidget {
                 isCm ? height.toStringAsFixed(0) : (height / 30.48).toStringAsFixed(1),
                 style: AppStyles.bigNumber,
               ),
-              const SizedBox(width: 5),
+              const SizedBox(width: 8),
               Text(isCm ? "cm" : "ft", style: AppStyles.unitLabel),
             ],
           ),
-          Slider(
-            value: height,
-            min: 100,
-            max: 250,
-            onChanged: onChanged,
-            activeColor: AppColors.red,
-            inactiveColor: AppColors.textSecondary.withOpacity(0.3),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 60,
+            width: double.infinity,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CustomPaint(
+                  size: const Size(double.infinity, 50),
+                  painter: RulerPainter(),
+                ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 2,
+                    activeTrackColor: Colors.transparent, 
+                    inactiveTrackColor: Colors.transparent,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 18.0, elevation: 5),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 30.0),
+                    thumbColor: AppColors.red,
+                    overlayColor: AppColors.red.withOpacity(0.15),
+                  ),
+                  child: Slider(
+                    value: height,
+                    min: 100,
+                    max: 250,
+                    onChanged: onChanged,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+}
+
+class RulerPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = AppColors.textSecondary.withOpacity(0.3)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    final double width = size.width;
+    final double midY = size.height / 2;
+    const int divisions = 40;
+    final double step = width / divisions;
+
+    for (int i = 0; i <= divisions; i++) {
+        double x = i * step;
+        double h = (i % 5 == 0) ? 15.0 : 8.0; 
+        canvas.drawLine(
+          Offset(x, midY - h/2),
+          Offset(x, midY + h/2),
+          paint,
+        );
+    }
+    
+    // Draw center line
+    final Paint centerPaint = Paint()
+      ..color = AppColors.textSecondary.withOpacity(0.1)
+      ..strokeWidth = 1;
+      
+    canvas.drawLine(
+      Offset(0, midY), 
+      Offset(width, midY), 
+      centerPaint
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

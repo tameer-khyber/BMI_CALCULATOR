@@ -19,29 +19,29 @@ class CounterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            color: AppColors.darkBlue.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(label, style: AppStyles.cardLabel),
           const SizedBox(height: 10),
           Text(value.toString(), style: AppStyles.bigNumber),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildRoundBtn(Icons.remove, onDecrement),
-              const SizedBox(width: 15),
               _buildRoundBtn(Icons.add, onIncrement),
             ],
           ),
@@ -51,16 +51,28 @@ class CounterCard extends StatelessWidget {
   }
 
   Widget _buildRoundBtn(IconData icon, VoidCallback onPressed) {
-    return RawMaterialButton(
-      onPressed: onPressed,
-      elevation: 0,
-      constraints: const BoxConstraints.tightFor(
-        width: 50.0,
-        height: 50.0,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.darkBlue.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Icon(
+          icon,
+          color: AppColors.darkBlue,
+          size: 28,
+        ),
       ),
-      shape: const CircleBorder(),
-      fillColor: AppColors.textPrimary,
-      child: Icon(icon, color: Colors.white),
     );
   }
 }

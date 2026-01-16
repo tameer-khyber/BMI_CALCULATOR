@@ -16,15 +16,19 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 60,
+      height: 65,
       decoration: BoxDecoration(
-        color: AppColors.red, // Using Red for CTA as it's a strong action color in the palette
-        borderRadius: BorderRadius.circular(15), 
+        gradient: const LinearGradient(
+          colors: [AppColors.accent, AppColors.accentDark],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        borderRadius: BorderRadius.circular(20), 
         boxShadow: [
           BoxShadow(
-            color: AppColors.red.withOpacity(0.4),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
+            color: AppColors.red.withOpacity(0.5),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -32,11 +36,11 @@ class PrimaryButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
           child: Center(
             child: Text(
               label,
-              style: AppStyles.buttonText,
+              style: AppStyles.buttonText.copyWith(letterSpacing: 2.0),
             ),
           ),
         ),
