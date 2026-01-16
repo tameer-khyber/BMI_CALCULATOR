@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'res/theme.dart';
 import 'view_models/home_controller.dart';
-import 'views/home_view.dart';
+import 'res/routes.dart';
 
 void main() {
   runApp(const BmiApp());
@@ -20,7 +20,8 @@ class BmiApp extends StatelessWidget {
       title: 'BMI Calculator',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const HomeView(),
+      initialRoute: AppRoutes.splash,
+      getPages: AppRoutes.pages,
     );
   }
 }
