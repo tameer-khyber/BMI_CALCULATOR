@@ -9,6 +9,8 @@ import '../widgets/custom_bottom_nav.dart';
 import '../widgets/update_data_sheet.dart';
 import 'result_view.dart'; // Keep for navigation if needed, though flow might change
 import '../res/routes.dart';
+import '../widgets/fade_in_slide.dart';
+import 'package:intl/intl.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
@@ -16,7 +18,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -26,15 +28,15 @@ class HomeView extends GetView<HomeController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildHeader(),
+                  FadeInSlide(delay: 0.1, child: _buildHeader(context)),
                   const SizedBox(height: 30),
-                  _buildMainBMICard(),
+                  FadeInSlide(delay: 0.2, child: _buildMainBMICard()),
                   const SizedBox(height: 20),
-                  _buildStatsGrid(),
+                  FadeInSlide(delay: 0.3, child: _buildStatsGrid()),
                   const SizedBox(height: 20),
-                  _buildActionButton(),
+                  FadeInSlide(delay: 0.4, child: _buildActionButton()),
                   const SizedBox(height: 30),
-                  _buildRecentProgress(),
+                  FadeInSlide(delay: 0.5, child: _buildRecentProgress()),
                 ],
               ),
             ),
@@ -48,10 +50,13 @@ class HomeView extends GetView<HomeController> {
                 selectedIndex: 0,
                 onTap: (index) {
                    if (index == 1) Get.toNamed(AppRoutes.statistics);
-                   if (index == 2) Get.toNamed(AppRoutes.healthInsights);
+                   // index 2 is removed
                    if (index == 3) Get.toNamed(AppRoutes.history);
                    if (index == 4) Get.toNamed(AppRoutes.profile);
                    if (index == 5) Get.toNamed(AppRoutes.settings);
+                   if (index == 99) {
+                     Get.toNamed(AppRoutes.healthInsights);
+                   }
                 },
               ),
             ),
@@ -61,7 +66,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -69,32 +74,54 @@ class HomeView extends GetView<HomeController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "BMI Calculator",
+              'dashboard_title'.tr,
               style: AppStyles.dashboardTitle,
             ),
             const SizedBox(height: 4),
             Text(
-              "Welcome back, User!",
+              'welcome_message'.tr,
               style: AppStyles.welcomeText,
             ),
           ],
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+        Row(
+          children: [
+             Container(
+              decoration: BoxDecoration(
+                color: Get.theme.cardTheme.color,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: AppColors.textPrimary),
-            onPressed: () {},
-          ),
+              child: IconButton(
+                icon: Icon(Icons.notifications_outlined, color: Theme.of(context).iconTheme.color),
+                onPressed: () {},
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Get.theme.cardTheme.color,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: Icon(Icons.person_outline_rounded, color: Theme.of(context).iconTheme.color),
+                onPressed: () => Get.toNamed(AppRoutes.profile),
+              ),
+            ),
+          ],
         )
       ],
     );
@@ -104,13 +131,13 @@ class HomeView extends GetView<HomeController> {
     return Obx(() {
       final bmi = controller.calculateBMI;
       // Determine status color/text based on BMI (simplified logic for UI demo)
-      String status = "Healthy Weight";
+      String status = 'healthy_weight'.tr;
       Color statusColor = AppColors.success;
       if (bmi < 18.5) {
-        status = "Underweight";
+        status = 'underweight'.tr;
         statusColor = AppColors.warning;
       } else if (bmi > 25) {
-        status = "Overweight";
+        status = 'overweight'.tr;
         statusColor = AppColors.error;
       }
 
@@ -139,7 +166,7 @@ class HomeView extends GetView<HomeController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("CURRENT BMI SCORE", style: AppStyles.cardLabel.copyWith(color: AppStyles.cardLabel.color?.withOpacity(0.7))),
+                      Text('current_bmi'.tr, style: AppStyles.cardLabel.copyWith(color: AppStyles.cardLabel.color?.withOpacity(0.7))),
                       const SizedBox(width: 5),
                       const Icon(Icons.arrow_forward_ios, size: 10, color: Colors.white),
                     ],
@@ -171,8 +198,8 @@ class HomeView extends GetView<HomeController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildMiniStat("LAST LOGGED", "2 days ago"),
-                      _buildMiniStat("TARGET BMI", "21.5"),
+                      _buildMiniStat('last_logged'.tr, "2 days ago"), // TODO: Real time
+                      _buildMiniStat('target_bmi'.tr, "21.5"),
                     ],
                   )
                 ],
@@ -208,7 +235,7 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Icon(Icons.monitor_weight_outlined, color: AppColors.primary, size: 20),
                     const SizedBox(width: 8),
-                    Text("Weight", style: AppStyles.inputLabel),
+                    Text('weight'.tr, style: AppStyles.inputLabel),
                   ],
                 ),
                 const SizedBox(height: 15),
@@ -236,7 +263,7 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Icon(Icons.height_rounded, color: AppColors.secondaryDark, size: 20),
                     const SizedBox(width: 8),
-                    Text("Height", style: AppStyles.inputLabel),
+                    Text('height'.tr, style: AppStyles.inputLabel),
                   ],
                 ),
                 const SizedBox(height: 15),
@@ -289,7 +316,7 @@ class HomeView extends GetView<HomeController> {
           children: [
             const Icon(Icons.edit_calendar_rounded, color: Colors.white),
             const SizedBox(width: 10),
-            Text("Update My Data", style: AppStyles.buttonText),
+            Text('update_data'.tr, style: AppStyles.buttonText),
           ],
         ),
       ),
@@ -302,53 +329,75 @@ class HomeView extends GetView<HomeController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Recent Progress", style: AppStyles.sectionHeader),
+            Text('recent_progress'.tr, style: AppStyles.sectionHeader),
             TextButton(
-              onPressed: () {},
-              child: Text("SEE ALL", style: AppStyles.seeAll),
+              onPressed: () => Get.toNamed(AppRoutes.history),
+              child: Text('see_all'.tr, style: AppStyles.seeAll),
             ),
           ],
         ),
         const SizedBox(height: 10),
-        DashboardCard(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              InkWell(
-                onTap: () => Get.toNamed(AppRoutes.profile),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+        Obx(() {
+          final history = controller.historyController.history;
+          if (history.isEmpty) {
+             return DashboardCard(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: Text('no_history'.tr, style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+              ),
+            );
+          }
+          
+          // Take top 3 records
+          final recent = history.take(3).toList();
+          
+          return Column(
+            children: recent.map((record) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: DashboardCard(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () => Get.toNamed(AppRoutes.profile),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+                            ],
+                          ),
+                          child: const Icon(Icons.show_chart_rounded, color: AppColors.primary, size: 24),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(DateFormat('MMM d, yyyy').format(record.date), style: AppStyles.inputLabel),
+                          const SizedBox(height: 4),
+                          Text("${'weight'.tr}: ${record.weight} kg", style: AppStyles.welcomeText),
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(record.bmi.toStringAsFixed(1), style: AppStyles.inputLabel.copyWith(color: AppColors.primary)),
+                          const SizedBox(height: 4),
+                          Text("BMI", style: AppStyles.inputUnit.copyWith(fontSize: 10)),
+                        ],
+                      ),
                     ],
                   ),
-                  child: const Icon(Icons.person_outline_rounded, color: AppColors.primary, size: 24),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Oct 24, 2023", style: AppStyles.inputLabel),
-                  const SizedBox(height: 4),
-                  Text("Weight: 69.2 kg", style: AppStyles.welcomeText),
-                ],
-              ),
-              const Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text("22.6", style: AppStyles.inputLabel.copyWith(color: AppColors.primary)),
-                  const SizedBox(height: 4),
-                  Text("BMI", style: AppStyles.inputUnit.copyWith(fontSize: 10)),
-                ],
-              ),
-            ],
-          ),
-        ),
+              );
+            }).toList(),
+          );
+        }),
       ],
     );
   }

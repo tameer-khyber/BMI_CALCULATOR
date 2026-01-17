@@ -29,28 +29,8 @@ class _SplashViewState extends State<SplashView> {
         child: Stack(
           children: [
             // Dark Mode Toggle (Top Right)
-            Positioned(
-              top: 20,
-              right: 20,
-              child: FadeInDown(
-                duration: const Duration(milliseconds: 600),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(Icons.nightlight_round, color: AppColors.primary, size: 20),
-                ),
-              ),
-            ),
+            // Dark Mode Toggle Removed
+
 
             // Main Content
             Center(
@@ -188,22 +168,7 @@ class _SplashViewState extends State<SplashView> {
               ),
             ),
 
-            // Bottom Loader
-            Positioned(
-              bottom: 40,
-              right: 40,
-              child: FadeInUp(
-                delay: const Duration(milliseconds: 1000),
-                child: Container(
-                  width: 60,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),

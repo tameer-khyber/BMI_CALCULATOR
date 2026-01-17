@@ -4,17 +4,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../res/colors.dart';
 import '../res/styles.dart';
+import '../res/decorations.dart';
 import '../view_models/home_controller.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../res/routes.dart';
+import '../view_models/history_controller.dart';
+import 'package:collection/collection.dart'; // For average extension if needed, or manual
+import 'dart:math';
 
 class StatisticsView extends GetView<HomeController> {
   const StatisticsView({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
+    // Get History Controller
+    final historyController = Get.find<HistoryController>();
+    
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -30,9 +38,9 @@ class StatisticsView extends GetView<HomeController> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Statistics", style: AppStyles.dashboardTitle),
+                          Text('stats'.tr, style: AppStyles.dashboardTitle.copyWith(color: Theme.of(context).textTheme.titleLarge?.color)),
                           const SizedBox(height: 4),
-                          Text("BMI Analytics", style: AppStyles.welcomeText),
+                          Text('bmi_analytics'.tr, style: AppStyles.welcomeText),
                         ],
                       ),
                       Row(
@@ -40,19 +48,7 @@ class StatisticsView extends GetView<HomeController> {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
-                              ],
-                            ),
-                            child: const Icon(Icons.nightlight_round, color: AppColors.primary, size: 20),
-                          ),
-                          const SizedBox(width: 10),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Get.theme.cardColor,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
@@ -67,200 +63,173 @@ class StatisticsView extends GetView<HomeController> {
                   const SizedBox(height: 30),
 
                   // BMI Trends Chart Card
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 15, offset: const Offset(0, 5)),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("BMI Trends", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: AppColors.background,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Text("Last 6 Months", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 30),
-                        SizedBox(
-                          height: 200,
-                          child: LineChart(
-                            LineChartData(
-                              gridData: FlGridData(show: false),
-                              titlesData: FlTitlesData(
-                                bottomTitles: AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    getTitlesWidget: (value, meta) {
-                                      const titles = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'];
-                                      if (value.toInt() >= 0 && value.toInt() < titles.length) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
-                                          child: Text(titles[value.toInt()], style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold)),
-                                        );
-                                      }
-                                      return const Text('');
-                                    },
-                                    reservedSize: 22,
-                                    interval: 1,
-                                  ),
+                  Obx(() {
+                    if (historyController.history.isEmpty) return const SizedBox.shrink();
+                    
+                    // Prepare Data: Take last 6 records, reversed (so oldest is left)
+                    final data = historyController.history.take(6).toList().reversed.toList();
+                    final spots = data.asMap().entries.map((e) {
+                      return FlSpot(e.key.toDouble(), e.value.bmi);
+                    }).toList();
+
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: AppDecorations.cardDecoration(context),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('bmi_trends'.tr, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color)),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.background,
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                child: Text('last_records'.trParams({'count': '${data.length}'}), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary)),
                               ),
-                              borderData: FlBorderData(show: false),
-                              minX: 0,
-                              maxX: 5,
-                              minY: 15,
-                              maxY: 30,
-                              lineBarsData: [
-                                LineChartBarData(
-                                  spots: const [
-                                    FlSpot(0, 20),
-                                    FlSpot(1, 23),
-                                    FlSpot(2, 26),
-                                    FlSpot(3, 27.5),
-                                    FlSpot(4, 24),
-                                    FlSpot(5, 28),
-                                  ],
-                                  isCurved: true,
-                                  color: AppColors.primary,
-                                  barWidth: 4,
-                                  isStrokeCapRound: true,
-                                  dotData: FlDotData(show: false),
-                                  belowBarData: BarAreaData(
-                                    show: true,
-                                    color: AppColors.primary.withOpacity(0.1),
+                            ],
+                          ),
+                          const SizedBox(height: 30),
+                          SizedBox(
+                            height: 200,
+                            child: LineChart(
+                              LineChartData(
+                                gridData: FlGridData(show: false),
+                                titlesData: FlTitlesData(show: false), // Simplified for standard look
+                                borderData: FlBorderData(show: false),
+                                minX: 0,
+                                maxX: (data.length - 1).toDouble(),
+                                minY: 10, 
+                                maxY: 40,
+                                lineBarsData: [
+                                  LineChartBarData(
+                                    spots: spots,
+                                    isCurved: true,
+                                    color: AppColors.primary,
+                                    barWidth: 4,
+                                    isStrokeCapRound: true,
+                                    dotData: FlDotData(show: true),
+                                    belowBarData: BarAreaData(
+                                      show: true,
+                                      color: AppColors.primary.withOpacity(0.1),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _buildLegendItem(AppColors.primary, "Your BMI"),
-                            const SizedBox(width: 20),
-                            _buildLegendItem(AppColors.secondary, "Target Line"),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildLegendItem(AppColors.primary, 'your_bmi'.tr),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
 
                   const SizedBox(height: 20),
 
-                  // Average BMI
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.weightCard.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
+                  // Average BMI & Weight Change
+                  Obx(() {
+                    final history = historyController.history;
+                      if (history.isEmpty) {
+                        return Center(child: Text('no_records_add'.tr, style: TextStyle(color: AppColors.textSecondary)));
+                      }
+
+                    // Calculations
+                    final avgBmi = history.map((e) => e.bmi).reduce((a, b) => a + b) / history.length;
+                    final currentWeight = history.first.weight; // Latest is first usually? Check sorting
+                    // History is usually sorted by Date DESC in DB helper
+                    final latest = history.first;
+                    final oldest = history.last;
+                    final weightChange = latest.weight - oldest.weight;
+                    final isWeightLoss = weightChange < 0;
+
+                    return Column(
                       children: [
+                        // Average BMI
                         Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Icon(Icons.show_chart_rounded, color: AppColors.primary, size: 28),
-                        ),
-                        const SizedBox(width: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("AVERAGE BMI", style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                const Text("22.8", style: TextStyle(color: AppColors.textPrimary, fontSize: 28, fontWeight: FontWeight.bold)),
-                                const SizedBox(width: 10),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.all(20),
+                          decoration: AppDecorations.cardDecoration(context),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: AppColors.success.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Text("↓ 2%", style: TextStyle(color: AppColors.success, fontSize: 12, fontWeight: FontWeight.bold)),
+                                    color: Get.theme.cardColor,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: const Icon(Icons.show_chart_rounded, color: AppColors.primary, size: 28),
+                              ),
+                              const SizedBox(width: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    Text('average_bmi'.tr, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Weight Change
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.heightCard.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(Icons.monitor_weight_outlined, color: AppColors.actionButton, size: 28),
-                        ),
-                        const SizedBox(width: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("WEIGHT CHANGE", style: TextStyle(color: AppColors.secondaryDark, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
-                            const SizedBox(height: 4),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
+                          const SizedBox(height: 20),
+                          // Weight Change
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: AppDecorations.cardDecoration(context),
+                            child: Row(
                               children: [
-                                const Text("-3.2", style: TextStyle(color: AppColors.textPrimary, fontSize: 28, fontWeight: FontWeight.bold)),
-                                const SizedBox(width: 4),
-                                const Text("kg", style: TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600)),
-                                const SizedBox(width: 8),
-                                Text("LAST 30 DAYS", style: TextStyle(color: AppColors.textSecondary.withOpacity(0.7), fontSize: 10, fontWeight: FontWeight.w600)),
-                              ],
-                            ),
-                          ],
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Get.theme.cardColor,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: const Icon(Icons.monitor_weight_outlined, color: AppColors.actionButton, size: 28),
+                                ),
+                                const SizedBox(width: 20),
+                                Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('weight_change_total'.tr, style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color ?? AppColors.secondaryDark, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                                      const SizedBox(height: 4),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        Text(weightChange.abs().toStringAsFixed(1), style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 28, fontWeight: FontWeight.bold)),
+                                        const SizedBox(width: 4),
+                                        Text('weight'.tr, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16, fontWeight: FontWeight.w600)),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: isWeightLoss ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(4)
+                                        ),
+                                        child: Text(isWeightLoss ? 'lost'.tr : 'gained'.tr, style: TextStyle(color: isWeightLoss ? AppColors.success : AppColors.error, fontSize: 10, fontWeight: FontWeight.bold)),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    ),
-                  ),
+                    );
+                  }),
 
                   const SizedBox(height: 20),
 
                   // Goal Progress
                    Container(
                     padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 15, offset: const Offset(0, 5)),
-                      ],
-                    ),
+                    decoration: AppDecorations.cardDecoration(context),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -272,13 +241,13 @@ class StatisticsView extends GetView<HomeController> {
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: AppColors.background,
+                                    color: Get.theme.scaffoldBackgroundColor,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(Icons.flag_rounded, color: AppColors.primary, size: 24),
                                 ),
                                 const SizedBox(width: 12),
-                                const Text("Goal Progress", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                                Text('goal_progress'.tr, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color)),
                               ],
                             ),
                             const Text("75%", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
@@ -290,16 +259,16 @@ class StatisticsView extends GetView<HomeController> {
                           child: LinearProgressIndicator(
                             value: 0.75,
                             minHeight: 12,
-                            backgroundColor: AppColors.background,
+                            backgroundColor: Get.theme.scaffoldBackgroundColor,
                             color: AppColors.primary,
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                             Text("START: 24.5 BMI", style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.w600)),
-                             Text("TARGET: 21.5 BMI", style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.w600)),
+                             Text("${'start_label'.tr}: 24.5 BMI", style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.w600)),
+                             Text("${'target_label'.tr}: 21.5 BMI", style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ],
@@ -323,6 +292,7 @@ class StatisticsView extends GetView<HomeController> {
                    if (index == 3) Get.offNamed(AppRoutes.history);
                    if (index == 4) Get.offNamed(AppRoutes.profile);
                    if (index == 5) Get.offNamed(AppRoutes.settings);
+                   if (index == 99) Get.offNamed(AppRoutes.healthInsights);
                 },
               ),
             ),

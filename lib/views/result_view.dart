@@ -20,14 +20,14 @@ class ResultView extends GetView<HomeController> {
     final advice = controller.getBmiAdvice(bmi);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("YOUR RESULT", style: AppStyles.dashboardTitle.copyWith(fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: Get.theme.iconTheme.color),
           onPressed: () => Get.back(),
         ),
       ),
@@ -42,7 +42,7 @@ class ResultView extends GetView<HomeController> {
                   margin: const EdgeInsets.all(20),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Get.theme.cardColor,
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
@@ -70,7 +70,7 @@ class ResultView extends GetView<HomeController> {
                           Text(
                             bmi.toStringAsFixed(1),
                             style: GoogleFonts.poppins(
-                              color: AppColors.textPrimary,
+                              color: Get.theme.textTheme.bodyLarge?.color,
                               fontSize: 80,
                               fontWeight: FontWeight.w700,
                             ),
@@ -112,10 +112,10 @@ class ResultView extends GetView<HomeController> {
                               showLabels: false,
                               showTicks: false,
                               radiusFactor: 0.9,
-                              axisLineStyle: const AxisLineStyle(
+                              axisLineStyle: AxisLineStyle(
                                 thickness: 20,
                                 cornerStyle: CornerStyle.bothCurve,
-                                color: AppColors.background, 
+                                color: Get.theme.scaffoldBackgroundColor, 
                               ),
                               ranges: <GaugeRange>[
                                 GaugeRange(startValue: 10, endValue: 18.5, color: AppColors.accent),
@@ -142,6 +142,8 @@ class ResultView extends GetView<HomeController> {
               ),
             ),
             
+
+            
             Expanded(
               flex: 2,
               child: FadeInUp(
@@ -151,7 +153,7 @@ class ResultView extends GetView<HomeController> {
                   padding: const EdgeInsets.all(20),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Get.theme.cardColor,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -166,7 +168,7 @@ class ResultView extends GetView<HomeController> {
                       advice,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
-                        color: AppColors.textPrimary,
+                        color: Get.theme.textTheme.bodyLarge?.color,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                         height: 1.5,

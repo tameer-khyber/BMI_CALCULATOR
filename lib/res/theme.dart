@@ -51,4 +51,58 @@ class AppTheme {
     ),
     useMaterial3: true,
   );
+
+  static final ThemeData darkTheme = ThemeData(
+    primaryColor: AppColors.darkAccent,
+    scaffoldBackgroundColor: AppColors.darkBackground,
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.darkAccent,
+      secondary: AppColors.accent,
+      surface: AppColors.darkSurface,
+      error: AppColors.error,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: AppColors.darkTextPrimary,
+      onError: Colors.white,
+    ),
+    cardTheme: CardThemeData(
+      color: AppColors.darkSurface,
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+    fontFamily: 'Roboto',
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      iconTheme: IconThemeData(color: AppColors.darkTextPrimary),
+      titleTextStyle: TextStyle(
+        color: AppColors.darkTextPrimary,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.2,
+      ),
+    ),
+    iconTheme: const IconThemeData(color: AppColors.darkTextPrimary),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: AppColors.darkTextPrimary),
+      bodyMedium: TextStyle(color: AppColors.darkTextPrimary),
+    ),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: AppColors.darkAccent,
+      inactiveTrackColor: AppColors.darkTextSecondary.withOpacity(0.3),
+      thumbColor: AppColors.darkAccent,
+      overlayColor: AppColors.darkAccent.withOpacity(0.2),
+      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 15.0),
+      overlayShape: const RoundSliderOverlayShape(overlayRadius: 30.0),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppColors.darkAccent,
+      foregroundColor: Colors.white,
+    ),
+    useMaterial3: true,
+  );
 }

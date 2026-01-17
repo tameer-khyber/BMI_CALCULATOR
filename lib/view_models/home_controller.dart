@@ -52,7 +52,7 @@ class HomeController extends GetxController {
     
     // Save to History
     final status = getBmiStatus(bmi);
-    historyController.saveBmi(bmi, status);
+    historyController.saveBmi(bmi, weight.value, status);
     
     return bmi;
   }

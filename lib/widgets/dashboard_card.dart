@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../res/colors.dart';
+import '../res/decorations.dart';
 
 class DashboardCard extends StatelessWidget {
   final Widget child;
@@ -21,17 +22,7 @@ class DashboardCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: padding ?? const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color ?? AppColors.surface,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+        decoration: AppDecorations.dashboardCardDecoration(context, color: color),
         child: child,
       ),
     );

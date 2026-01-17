@@ -8,9 +8,12 @@ class AppColors {
   static const Color primaryDark = Color(0xFF004D40);
   static const Color accent = Color(0xFF26A69A); // Lighter teal
   
-  static const Color background = Color(0xFFF5F7FA); // Light Grey/Blue-ish white background
-  static const Color surface = Color(0xFFFFFFFF); // White for cards
+  static const Color background = Color(0xFFE2E8F0); // Deeper Cool Grey for distinct contrast
+  static const Color surface = Color(0xFFFFFFFF); // Pure White for cards
   
+  static const Color lightCard = Color(0xFFFFFFFF); 
+  static const Color dimWhite = Color(0xFFFFFFFF); // Keep consistant white
+
   static const Color secondary = Color(0xFFFFCCBC); // Soft Peach/Orange for secondary accents
   static const Color secondaryDark = Color(0xFFFF5722); // Stronger orange
   
@@ -37,4 +40,11 @@ class AppColors {
   static const Color red = error;
   static const Color cream = surface;
   static const Color cardSurface = surface;
+
+  // Dark Mode Palette
+  static const Color darkBackground = Color(0xFF0D1B2A); // Deep Navy
+  static const Color darkSurface = Color(0xFF1B263B); // Lighter Navy
+  static const Color darkAccent = Color(0xFFFF6B6B); // Coral/Red
+  static const Color darkTextPrimary = Color(0xFFFFFFFF);
+  static const Color darkTextSecondary = Color(0xFFE0E1DD);
 }

@@ -3,28 +3,35 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../res/colors.dart';
 import '../res/styles.dart';
+import '../res/decorations.dart';
 import '../view_models/history_controller.dart'; // Assuming this exists or we use HomeController
 import '../widgets/custom_bottom_nav.dart';
 import '../res/routes.dart';
+import 'package:intl/intl.dart';
+import '../widgets/fade_in_slide.dart';
 
 class HistoryView extends StatelessWidget {
   const HistoryView({Key? key}) : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
-    // Controller for logic (using existing or new local logic for filters)
+    // Controller for logic
+    final controller = Get.find<HistoryController>();
     final filter = "All Time".obs;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+            Positioned.fill(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                   // Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,17 +39,17 @@ class HistoryView extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Measurement History",
+                          Text(
+                            'measurement_history'.tr,
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
+                              color: Theme.of(context).textTheme.titleLarge?.color,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "Track your progress over time",
+                            'track_progress'.tr,
                             style: AppStyles.welcomeText,
                           ),
                         ],
@@ -50,7 +57,7 @@ class HistoryView extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Get.theme.cardColor,
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
@@ -65,54 +72,50 @@ class HistoryView extends StatelessWidget {
                   // Filters
                   Obx(() => Row(
                     children: [
-                      _buildFilterChip("All Time", filter.value == "All Time", () => filter.value = "All Time"),
+                      _buildFilterChip('all_time'.tr, filter.value == "All Time", () => filter.value = "All Time"),
                       const SizedBox(width: 10),
-                      _buildFilterChip("Monthly", filter.value == "Monthly", () => filter.value = "Monthly"),
+                      _buildFilterChip('monthly'.tr, filter.value == "Monthly", () => filter.value = "Monthly"),
                       const SizedBox(width: 10),
-                      _buildFilterChip("Weekly", filter.value == "Weekly", () => filter.value = "Weekly"),
+                      _buildFilterChip('weekly'.tr, filter.value == "Weekly", () => filter.value = "Weekly"),
                     ],
                   )),
                   const SizedBox(height: 20),
 
                   // History List
-                  // Mock Data matching the image
-                  _buildHistoryCard(
-                    date: "Oct 24, 2023",
-                    time: "08:30 AM",
-                    weight: "68.5",
-                    bmi: "22.4",
-                    status: "HEALTHY",
-                    statusColor: AppColors.success,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildHistoryCard(
-                    date: "Oct 18, 2023",
-                    time: "07:45 AM",
-                    weight: "76.2",
-                    bmi: "25.1",
-                    status: "OVERWEIGHT",
-                    statusColor: AppColors.secondaryDark,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildHistoryCard(
-                    date: "Oct 10, 2023",
-                    time: "09:15 AM",
-                    weight: "77.5",
-                    bmi: "25.4",
-                    status: "OVERWEIGHT",
-                    statusColor: AppColors.secondaryDark,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildHistoryCard(
-                    date: "Sep 28, 2023",
-                    time: "08:00 AM",
-                    weight: "78.1",
-                    bmi: "25.6",
-                    status: "OVERWEIGHT",
-                    statusColor: AppColors.secondaryDark,
+                  Expanded(
+                    child: Obx(() {
+                      if (controller.history.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.history, size: 60, color: AppColors.textSecondary.withOpacity(0.3)),
+                              const SizedBox(height: 10),
+                              Text('no_history'.tr, style: TextStyle(color: AppColors.textSecondary)),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.separated(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: controller.history.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 15),
+                        itemBuilder: (context, index) {
+                          final record = controller.history[index];
+                          return FadeInSlide(
+                            delay: index * 0.1,
+                            child: _buildHistoryCard(
+                              context,
+                              record: record,
+                            ),
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ],
               ),
+            ),
             ),
 
             // Bottom Nav
@@ -128,6 +131,7 @@ class HistoryView extends StatelessWidget {
                    if (index == 2) Get.offNamed(AppRoutes.healthInsights);
                    if (index == 4) Get.offNamed(AppRoutes.profile);
                    if (index == 5) Get.offNamed(AppRoutes.settings);
+                   if (index == 99) Get.offNamed(AppRoutes.healthInsights);
                 },
               ),
             ),
@@ -144,7 +148,7 @@ class HistoryView extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : Colors.white,
+            color: isSelected ? AppColors.primary : Get.theme.cardColor,
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.transparent), // Keep size consistent
              boxShadow: isSelected ? [
@@ -165,27 +169,17 @@ class HistoryView extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryCard({
-    required String date,
-    required String time,
-    required String weight,
-    required String bmi,
-    required String status,
-    required Color statusColor,
+  Widget _buildHistoryCard(
+    BuildContext context, {
+    required BmiRecord record,
   }) {
+    final statusColor = _getStatusColor(record.status);
+    final date = DateFormat('MMM d, yyyy').format(record.date);
+    final time = DateFormat('h:mm a').format(record.date);
+    
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: AppDecorations.cardDecoration(context),
       child: Column(
         children: [
           Row(
@@ -196,7 +190,7 @@ class HistoryView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.background,
+                      color: Get.theme.scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(Icons.calendar_today_outlined, color: AppColors.primary, size: 20),
@@ -207,10 +201,10 @@ class HistoryView extends StatelessWidget {
                     children: [
                       Text(
                         date,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -232,7 +226,7 @@ class HistoryView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  status,
+                  record.status.toUpperCase(),
                   style: TextStyle(
                     color: statusColor,
                     fontSize: 10,
@@ -250,15 +244,15 @@ class HistoryView extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("WEIGHT", style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                  Text('weight'.tr.toUpperCase(), style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
                   const SizedBox(height: 5),
                   Row(
                      crossAxisAlignment: CrossAxisAlignment.baseline,
                      textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text(weight, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                      Text(record.bmi.toStringAsFixed(1), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color)),
                       const SizedBox(width: 4),
-                      const Text("kg", style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                      Text("BMI", style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
                     ],
                   ),
                 ],
@@ -266,9 +260,9 @@ class HistoryView extends StatelessWidget {
                Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Text("BMI SCORE", style: TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                  Text('bmi_score'.tr, style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
                   const SizedBox(height: 5),
-                  Text(bmi, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: statusColor)),
+                  Text(record.bmi.toStringAsFixed(1), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: statusColor)),
                 ],
               ),
             ],
@@ -276,5 +270,16 @@ class HistoryView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'underweight': return AppColors.warning;
+      case 'normal': return AppColors.success;
+      case 'overweight': return AppColors.secondaryDark;
+      case 'obese': return AppColors.error;
+      default: return AppColors.primary;
+    }
   }
 }
