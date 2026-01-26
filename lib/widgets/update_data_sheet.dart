@@ -76,12 +76,12 @@ class UpdateDataSheet extends GetView<HomeController> {
             child: Obx(() => Row(
               children: [
                 _buildToggleOption(
-                  "Metric (kg/cm)", 
+                  'metric_units'.tr, 
                   controller.selectedUnit.value == LengthUnit.cm, 
                   () => controller.selectedUnit.value = LengthUnit.cm
                 ),
                 _buildToggleOption(
-                  "Imperial (lbs/ft)", 
+                  'imperial_units'.tr, 
                   controller.selectedUnit.value == LengthUnit.ft, 
                   () => controller.selectedUnit.value = LengthUnit.ft
                 ),
@@ -133,7 +133,10 @@ class UpdateDataSheet extends GetView<HomeController> {
                               ),
                             ),
                           ),
-                          Text("KG", style: AppStyles.inputUnit),
+                          Obx(() => Text(
+                            controller.selectedUnit.value == LengthUnit.cm ? "KG" : "LBS", 
+                            style: AppStyles.inputUnit
+                          )),
                         ],
                       ),
                     ],
@@ -181,7 +184,10 @@ class UpdateDataSheet extends GetView<HomeController> {
                               ),
                             ),
                           ),
-                          Text("CM", style: AppStyles.inputUnit),
+                          Obx(() => Text(
+                            controller.selectedUnit.value == LengthUnit.cm ? "CM" : "FT", 
+                            style: AppStyles.inputUnit
+                          )),
                         ],
                       ),
                     ],
@@ -220,10 +226,18 @@ class UpdateDataSheet extends GetView<HomeController> {
           ),
           const SizedBox(height: 20),
           Center(
-            child: Text(
-              "Last updated 2 days ago",
-              style: GoogleFonts.poppins(color: AppColors.textSecondary, fontSize: 12),
-            ),
+            child: Obx(() {
+                if (controller.historyController.history.isEmpty) {
+                  return const SizedBox.shrink(); 
+                }
+                final lastDate = controller.historyController.history.first.date;
+                 // Simple formatting - normally use intl or timeago
+                final timeStr = "${lastDate.day}/${lastDate.month}/${lastDate.year}";
+                return Text(
+                  'last_updated_at'.trParams({'time': timeStr}),
+                  style: GoogleFonts.poppins(color: AppColors.textSecondary, fontSize: 12),
+                );
+              }),
           ),
           const SizedBox(height: 10), // Bottom safe area spacing
         ],

@@ -7,12 +7,15 @@ import '../res/decorations.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../res/routes.dart';
 import '../view_models/language_controller.dart';
+import '../view_models/settings_controller.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final settingsController = Get.put(SettingsController());
+    
     return Scaffold(
       backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -32,16 +35,41 @@ class SettingsView extends StatelessWidget {
                     _getLanguageName(Get.locale?.languageCode),
                     onTap: () => _showLanguageBottomSheet(context)
                   ),
-                  _buildSettingTile(Icons.notifications_outlined, 'notifications'.tr, 'on'.tr),
-                  _buildSettingTile(Icons.notifications_outlined, 'notifications'.tr, 'on'.tr),
+                  Obx(() => _buildSwitchTile(
+                    Icons.notifications_outlined, 
+                    'notifications'.tr, 
+                    settingsController.notificationsEnabled,
+                    (val) => settingsController.toggleNotifications(val)
+                  )),
                   _buildPremiumThemeToggle(
+                    context,
                     Get.isDarkMode,
                     (value) => Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light),
                   ),
+
+                  const SizedBox(height: 20),
+
+
                   const SizedBox(height: 20),
                   _buildSectionTitle('privacy_security'.tr),
-                  _buildSettingTile(Icons.lock_outline, 'privacy_policy'.tr, ""),
-                  _buildSettingTile(Icons.help_outline, 'help_support'.tr, ""),
+                  _buildSettingTile(
+                    Icons.lock_outline, 
+                    'privacy_policy'.tr, 
+                    "", 
+                    onTap: () => _showTopModal(context, 'privacy_policy'.tr, "This is a placeholder for the Privacy Policy. Your data is safe with us!")
+                  ),
+                  _buildSettingTile(
+                    Icons.help_outline, 
+                    'help_support'.tr, 
+                    "", 
+                    onTap: () => _showTopModal(context, 'help_support'.tr, "Need help? Contact support@example.com")
+                  ),
+                  _buildSettingTile(
+                    Icons.info_outline, 
+                    'about_app'.tr, 
+                    "", 
+                    onTap: () => _showTopModal(context, 'about_app'.tr, "BMI Calculator v1.0.0\nBuilt with Flutter & GetX")
+                  ),
                   const SizedBox(height: 20),
                   _buildSectionTitle('account'.tr),
                   _buildSettingTile(Icons.logout, 'sign_out'.tr, "", isDestructive: true),
@@ -104,7 +132,7 @@ class SettingsView extends StatelessWidget {
     ), // Close Container
     ); // Close GestureDetector
   }
-  Widget _buildPremiumThemeToggle(bool isDark, Function(bool) onChanged) {
+  Widget _buildPremiumThemeToggle(BuildContext context, bool isDark, Function(bool) onChanged) {
     return GestureDetector(
       onTap: () => onChanged(!isDark),
       child: AnimatedContainer(
@@ -211,20 +239,78 @@ class SettingsView extends StatelessWidget {
           color: Get.theme.scaffoldBackgroundColor,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('select_language'.tr, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color)),
-            const SizedBox(height: 20),
-            _buildLanguageOption(context, "English", "en", "US"),
-            _buildLanguageOption(context, "Español", "es", "ES"),
-            _buildLanguageOption(context, "Français", "fr", "FR"),
-            _buildLanguageOption(context, "Hindi", "hi", "IN"),
-            _buildLanguageOption(context, "Chinese", "zh", "CN"),
-            _buildLanguageOption(context, "Arabic", "ar", "SA"),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('select_language'.tr, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color)),
+              const SizedBox(height: 20),
+              _buildLanguageOption(context, "English", "en", "US"),
+              _buildLanguageOption(context, "Español", "es", "ES"),
+              _buildLanguageOption(context, "Français", "fr", "FR"),
+              _buildLanguageOption(context, "Hindi", "hi", "IN"),
+              _buildLanguageOption(context, "Chinese", "zh", "CN"),
+              _buildLanguageOption(context, "Arabic", "ar", "SA"),
+              const SizedBox(height: 20), // Extra padding at bottom
+            ],
+          ),
         ),
+      ),
+      isScrollControlled: true, // Allow it to be taller than half screen if needed
+    );
+  }
+
+
+
+  void _showTopModal(BuildContext context, String title, String content) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Get.theme.dialogBackgroundColor,
+        child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color)),
+                const SizedBox(height: 15),
+                Text(content, textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => Get.back(), 
+                  child: Text('close'.tr, style: const TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                )
+              ],
+            )
+        ),
+      )
+    );
+  }
+
+  Widget _buildSwitchTile(IconData icon, String title, bool value, Function(bool) onChanged) {
+     return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Adjusted padding
+      decoration: BoxDecoration(
+        color: Get.theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: AppColors.primary),
+          const SizedBox(width: 15),
+          Expanded(child: Text(title, style: TextStyle(fontWeight: FontWeight.w600, color: Get.theme.textTheme.bodyLarge?.color))),
+          Switch(
+            value: value, 
+            onChanged: onChanged,
+            activeColor: AppColors.primary,
+          ),
+        ],
       ),
     );
   }

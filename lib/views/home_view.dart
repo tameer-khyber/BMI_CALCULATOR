@@ -198,7 +198,14 @@ class HomeView extends GetView<HomeController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildMiniStat('last_logged'.tr, "2 days ago"), // TODO: Real time
+                      Obx(() {
+                        if (controller.historyController.history.isEmpty) {
+                           return _buildMiniStat('last_logged'.tr, "—");
+                        }
+                        final lastDate = controller.historyController.history.first.date;
+                        // Simple formatting
+                        return _buildMiniStat('last_logged'.tr, "${lastDate.day}/${lastDate.month}");
+                      }),
                       _buildMiniStat('target_bmi'.tr, "21.5"),
                     ],
                   )
@@ -245,7 +252,10 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Text("${controller.weight.value}", style: AppStyles.inputValue),
                     const SizedBox(width: 4),
-                    Text("kg", style: AppStyles.inputUnit),
+                    Obx(() => Text(
+                      controller.selectedUnit.value == LengthUnit.cm ? "kg" : "lbs", 
+                      style: AppStyles.inputUnit
+                    )),
                   ],
                 ),
               ],
@@ -273,7 +283,10 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Text("${controller.height.value.toInt()}", style: AppStyles.inputValue),
                     const SizedBox(width: 4),
-                    Text("cm", style: AppStyles.inputUnit),
+                    Obx(() => Text(
+                      controller.selectedUnit.value == LengthUnit.cm ? "cm" : "ft", 
+                      style: AppStyles.inputUnit
+                    )),
                   ],
                 ),
               ],
@@ -379,7 +392,10 @@ class HomeView extends GetView<HomeController> {
                         children: [
                           Text(DateFormat('MMM d, yyyy').format(record.date), style: AppStyles.inputLabel),
                           const SizedBox(height: 4),
-                          Text("${'weight'.tr}: ${record.weight} kg", style: AppStyles.welcomeText),
+                          Obx(() => Text(
+                            "${'weight'.tr}: ${record.weight} ${controller.selectedUnit.value == LengthUnit.cm ? 'kg' : 'lbs'}", 
+                            style: AppStyles.welcomeText
+                          )),
                         ],
                       ),
                       const Spacer(),
