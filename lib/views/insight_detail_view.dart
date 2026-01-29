@@ -30,7 +30,7 @@ class InsightDetailView extends StatelessWidget {
             leading: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Get.theme.cardColor.withOpacity(0.5),
+                color: Get.theme.cardColor.withValues(alpha: 0.5),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
@@ -92,7 +92,7 @@ class InsightDetailView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       height: 1.6,
-                      color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.8),
+                      color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -106,7 +106,7 @@ class InsightDetailView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         elevation: 5,
-                        shadowColor: AppColors.primary.withOpacity(0.4),
+                        shadowColor: AppColors.primary.withValues(alpha: 0.4),
                       ),
                       child: const Text("Start Session", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ),
@@ -128,7 +128,7 @@ class InsightDetailView extends StatelessWidget {
         color: Get.theme.cardColor,
         borderRadius: BorderRadius.circular(24),
          border: Border.all(
-            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.transparent,
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
          ),
       ),
       child: Row(

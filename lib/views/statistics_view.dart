@@ -51,7 +51,7 @@ class StatisticsView extends GetView<HomeController> {
                               color: Get.theme.cardColor,
                               shape: BoxShape.circle,
                               boxShadow: [
-                                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10),
                               ],
                             ),
                             child: const Icon(Icons.notifications_outlined, color: AppColors.primary, size: 20),
@@ -113,7 +113,7 @@ class StatisticsView extends GetView<HomeController> {
                                     dotData: FlDotData(show: true),
                                     belowBarData: BarAreaData(
                                       show: true,
-                                      color: AppColors.primary.withOpacity(0.1),
+                                      color: AppColors.primary.withValues(alpha: 0.1),
                                     ),
                                   ),
                                 ],
@@ -208,7 +208,7 @@ class StatisticsView extends GetView<HomeController> {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
-                                          color: isWeightLoss ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
+                                          color: isWeightLoss ? AppColors.success.withValues(alpha: 0.1) : AppColors.error.withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(4)
                                         ),
                                         child: Text(isWeightLoss ? 'lost'.tr : 'gained'.tr, style: TextStyle(color: isWeightLoss ? AppColors.success : AppColors.error, fontSize: 10, fontWeight: FontWeight.bold)),
@@ -285,7 +285,7 @@ class StatisticsView extends GetView<HomeController> {
               left: 0,
               right: 0,
               child: CustomBottomNav(
-                selectedIndex: -1, // No active tab for Stats since it's a detail page now
+                selectedIndex: 1, // Analysis/Stats Tab
                 onTap: (index) {
                    if (index == 0) Get.offNamed(AppRoutes.home);
                    if (index == 2) Get.offNamed(AppRoutes.healthInsights);

@@ -79,4 +79,7 @@ class AppStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,
   );
+
+  static TextStyle get bigNumber => inputValue;
+  static TextStyle get unitLabel => inputUnit;
 }

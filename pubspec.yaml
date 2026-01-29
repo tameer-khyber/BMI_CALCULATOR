@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   get: ^4.7.3
-  syncfusion_flutter_gauges: ^32.1.23
+  syncfusion_flutter_gauges: ^32.1.25
   animate_do: ^4.2.0
   fl_chart: ^1.1.1
   get_storage: ^2.1.1
@@ -43,7 +43,7 @@ dependencies:
   sqflite: ^2.4.2
   path: ^1.9.1
   sqflite_common_ffi_web: ^1.0.2
-  google_fonts: ^7.0.2
+  google_fonts: ^8.0.0
 
 dev_dependencies:
   flutter_test:

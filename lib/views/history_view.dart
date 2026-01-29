@@ -60,7 +60,7 @@ class HistoryView extends StatelessWidget {
                           color: Get.theme.cardColor,
                           shape: BoxShape.circle,
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10),
                           ],
                         ),
                         child: const Icon(Icons.filter_list_rounded, color: AppColors.primary, size: 24),
@@ -89,7 +89,7 @@ class HistoryView extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.history, size: 60, color: AppColors.textSecondary.withOpacity(0.3)),
+                              Icon(Icons.history, size: 60, color: AppColors.textSecondary.withValues(alpha: 0.3)),
                               const SizedBox(height: 10),
                               Text('no_history'.tr, style: TextStyle(color: AppColors.textSecondary)),
                             ],
@@ -152,7 +152,7 @@ class HistoryView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.transparent), // Keep size consistent
              boxShadow: isSelected ? [
-              BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))
+              BoxShadow(color: AppColors.primary.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4))
             ] : null,
           ),
           child: Text(
@@ -222,7 +222,7 @@ class HistoryView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.15),
+                  color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

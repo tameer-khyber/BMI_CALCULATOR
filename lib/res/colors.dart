@@ -40,6 +40,9 @@ class AppColors {
   static const Color red = error;
   static const Color cream = surface;
   static const Color cardSurface = surface;
+  static const Color darkBlue = primaryDark;
+  static const Color lightBlue = primary;
+
 
   // Dark Mode Palette
   static const Color darkBackground = Color(0xFF0D1B2A); // Deep Navy

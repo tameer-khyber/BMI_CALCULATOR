@@ -21,7 +21,7 @@ class CustomBottomNav extends StatelessWidget {
         borderRadius: BorderRadius.circular(35),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 5),
           ),
@@ -44,13 +44,29 @@ class CustomBottomNav extends StatelessWidget {
 
   Widget _buildNavItem(IconData icon, int index) {
     final isSelected = selectedIndex == index;
-    return IconButton(
-      icon: Icon(
-        icon,
-        color: isSelected ? AppColors.primary : AppColors.textSecondary,
-        size: 28,
+    return GestureDetector(
+      onTap: () => onTap(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.all(10), // Padding to create the circle size
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : Colors.transparent,
+          shape: BoxShape.circle,
+          boxShadow: isSelected ? [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            )
+          ] : null,
+        ),
+        child: Icon(
+          icon,
+          color: isSelected ? Colors.white : AppColors.textSecondary,
+          size: 24, // Slightly smaller icon to fit nicely in circle
+        ),
       ),
-      onPressed: () => onTap(index),
     );
   }
 
@@ -65,7 +81,7 @@ class CustomBottomNav extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.primary.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

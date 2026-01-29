@@ -7,11 +7,16 @@ import '../widgets/custom_bottom_nav.dart';
 import '../res/routes.dart';
 import 'insight_detail_view.dart'; // Import detailed view
 
+import '../view_models/health_insights_controller.dart';
+
 class HealthInsightsView extends StatelessWidget {
   const HealthInsightsView({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HealthInsightsController());
+    
     return Scaffold(
       backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -46,7 +51,7 @@ class HealthInsightsView extends StatelessWidget {
                       color: Get.theme.cardColor,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
                       ],
                     ),
                       child: TextField(
@@ -62,70 +67,36 @@ class HealthInsightsView extends StatelessWidget {
                   const SizedBox(height: 30),
 
                   // Categories Grid
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 15,
-                    crossAxisSpacing: 15,
-                    childAspectRatio: 0.85,
-                    children: [
-                      _buildCategoryCard(
-                        'nutrition_tips'.tr, 
-                        'articles_count'.tr,   
-                        Icons.restaurant_menu_rounded, 
-                        const Color(0xFFE0F2F1), 
-                        AppColors.primary,
-                        imagePath: "assets/images/nutrition.png",
-                        description: 'nutrition_desc'.tr,
+                  Obx(() {
+                    if (controller.isLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 15,
+                        crossAxisSpacing: 15,
+                        childAspectRatio: 0.85,
                       ),
-                      _buildCategoryCard(
-                        'workout_plans'.tr, 
-                        'routine_count'.tr,   
-                        Icons.fitness_center_rounded, 
-                        const Color(0xFFFFEBEE), 
-                        AppColors.secondaryDark,
-                        imagePath: "assets/images/workout.png",
-                        description: 'workout_desc'.tr,
-                      ),
-                      _buildCategoryCard(
-                        'sleep_tracking'.tr, 
-                        'daily_log'.tr,   
-                        Icons.nights_stay_rounded, 
-                        const Color(0xFFE8EAF6), 
-                        const Color(0xFF3949AB),
-                        imagePath: "assets/images/sleep.png",
-                        description: 'sleep_desc'.tr,
-                      ),
-                      _buildCategoryCard(
-                        'water_intake'.tr, 
-                        'target_vol'.tr,   
-                        Icons.water_drop_rounded, 
-                        const Color(0xFFE0F7FA), 
-                        const Color(0xFF00ACC1),
-                        imagePath: "assets/images/water.png",
-                        description: 'water_desc'.tr,
-                      ),
-                      _buildCategoryCard(
-                        'mindfulness'.tr, 
-                        'sessions_count'.tr,   
-                        Icons.self_improvement_rounded, 
-                        const Color(0xFFFCE4EC), 
-                        const Color(0xFFE91E63),
-                        imagePath: "assets/images/mindfulness.png",
-                        description: 'mindfulness_desc'.tr, 
-                      ),
-                      _buildCategoryCard(
-                        'heart_health'.tr, 
-                        'bpm_avg'.tr,   
-                        Icons.favorite_rounded, 
-                        const Color(0xFFEFF3F4), 
-                        const Color(0xFF455A64),
-                        imagePath: "assets/images/heart.png",
-                        description: 'heart_desc'.tr,
-                      ),
-                    ],
-                  ),
+                      itemCount: controller.insights.length,
+                      itemBuilder: (context, index) {
+                        final item = controller.insights[index];
+                        return _buildCategoryCard(
+                          item.title,
+                          item.subtitle,
+                          item.icon,
+                          item.bgColor,
+                          item.iconColor,
+                          description: item.description,
+                          // Only use placeholder images for online demo if needed, or pass null to use icon design
+                          imagePath: null, 
+                        );
+                      },
+                    );
+                  }),
                   const SizedBox(height: 30),
 
                   // Daily Challenge
@@ -138,7 +109,7 @@ class HealthInsightsView extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
-                            BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8)),
+                            BoxShadow(color: AppColors.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 8)),
                           ],
                           image: const DecorationImage(
                             image: AssetImage("assets/images/healthy_lifestyle.png"),
@@ -228,11 +199,11 @@ class HealthInsightsView extends StatelessWidget {
             ? DecorationImage(
                 image: AssetImage(imagePath),
                 fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.darken),
+                colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.4), BlendMode.darken),
               ) 
             : null,
           boxShadow: [
-             BoxShadow(color: (imagePath != null ? Colors.black : bgColor).withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
+             BoxShadow(color: (imagePath != null ? Colors.black : bgColor).withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -241,7 +212,7 @@ class HealthInsightsView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: imagePath != null ? Colors.white.withOpacity(0.2) : Get.theme.cardColor,
+                color: imagePath != null ? Colors.white.withValues(alpha: 0.2) : Get.theme.cardColor,
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: imagePath != null ? Colors.white : iconColor, size: 24),
@@ -249,7 +220,7 @@ class HealthInsightsView extends StatelessWidget {
             const Spacer(),
             Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: imagePath != null ? Colors.white : AppColors.textPrimary)),
             const SizedBox(height: 4),
-            Text(subtitle, style: TextStyle(fontSize: 12, color: imagePath != null ? Colors.white.withOpacity(0.8) : AppColors.textSecondary)),
+            Text(subtitle, style: TextStyle(fontSize: 12, color: imagePath != null ? Colors.white.withValues(alpha: 0.8) : AppColors.textSecondary)),
           ],
         ),
       ),

@@ -24,14 +24,14 @@ class AppDecorations {
       boxShadow: [
         BoxShadow(
           color: isDark 
-            ? Colors.black.withOpacity(0.2) 
-            : Colors.blueGrey.withOpacity(0.08),
+            ? Colors.black.withValues(alpha: 0.2) 
+            : Colors.blueGrey.withValues(alpha: 0.08),
           blurRadius: 15,
           offset: const Offset(0, 8),
         ),
       ],
       border: Border.all(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.transparent,
+        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
         width: 1,
       ),
     );
@@ -45,7 +45,7 @@ class AppDecorations {
       borderRadius: BorderRadius.circular(24),
       boxShadow: [
         BoxShadow(
-          color: Colors.blueGrey.withOpacity(0.1),
+          color: Colors.blueGrey.withValues(alpha: 0.1),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),
@@ -68,8 +68,8 @@ class AppDecorations {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return BoxDecoration(
       color: bgColor ?? (isDark 
-        ? Colors.white.withOpacity(0.1) 
-        : AppColors.primary.withOpacity(0.1)),
+        ? Colors.white.withValues(alpha: 0.1) 
+        : AppColors.primary.withValues(alpha: 0.1)),
       borderRadius: BorderRadius.circular(14),
     );
   }
@@ -91,14 +91,14 @@ class AppDecorations {
       boxShadow: [
         BoxShadow(
           color: isDark 
-            ? Colors.black.withOpacity(0.3) 
-            : Colors.blue.withOpacity(0.1),
+            ? Colors.black.withValues(alpha: 0.3) 
+            : Colors.blue.withValues(alpha: 0.1),
           blurRadius: 15,
           offset: const Offset(0, 8),
         ),
       ],
       border: Border.all(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         width: 1,
       ),
     );
@@ -115,7 +115,7 @@ class AppDecorations {
       border: isSelected ? null : Border.all(color: Colors.transparent),
       boxShadow: isSelected ? [
         BoxShadow(
-          color: AppColors.primary.withOpacity(0.3),
+          color: AppColors.primary.withValues(alpha: 0.3),
           blurRadius: 8,
           offset: const Offset(0, 4),
         )

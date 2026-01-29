@@ -25,7 +25,7 @@ class CounterCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkBlue.withOpacity(0.08),
+            color: AppColors.darkBlue.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -61,7 +61,7 @@ class CounterCard extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppColors.darkBlue.withOpacity(0.1),
+              color: AppColors.darkBlue.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),

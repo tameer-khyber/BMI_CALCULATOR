@@ -19,7 +19,7 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.05),
+      shadowColor: Colors.black.withValues(alpha: 0.05),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -39,9 +39,9 @@ class AppTheme {
     ),
     sliderTheme: SliderThemeData(
       activeTrackColor: AppColors.textPrimary,
-      inactiveTrackColor: AppColors.textSecondary.withOpacity(0.3),
+      inactiveTrackColor: AppColors.textSecondary.withValues(alpha: 0.3),
       thumbColor: AppColors.secondaryDark,
-      overlayColor: AppColors.secondaryDark.withOpacity(0.2),
+      overlayColor: AppColors.secondaryDark.withValues(alpha: 0.2),
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 15.0),
       overlayShape: const RoundSliderOverlayShape(overlayRadius: 30.0),
     ),
@@ -68,7 +68,7 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: AppColors.darkSurface,
       elevation: 4,
-      shadowColor: Colors.black.withOpacity(0.2),
+      shadowColor: Colors.black.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -93,9 +93,9 @@ class AppTheme {
     ),
     sliderTheme: SliderThemeData(
       activeTrackColor: AppColors.darkAccent,
-      inactiveTrackColor: AppColors.darkTextSecondary.withOpacity(0.3),
+      inactiveTrackColor: AppColors.darkTextSecondary.withValues(alpha: 0.3),
       thumbColor: AppColors.darkAccent,
-      overlayColor: AppColors.darkAccent.withOpacity(0.2),
+      overlayColor: AppColors.darkAccent.withValues(alpha: 0.2),
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 15.0),
       overlayShape: const RoundSliderOverlayShape(overlayRadius: 30.0),
     ),

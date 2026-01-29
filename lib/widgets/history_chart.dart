@@ -83,8 +83,8 @@ class HistoryChart extends StatelessWidget {
                     show: true,
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primary.withOpacity(0.3),
-                        AppColors.primary.withOpacity(0.0),
+                        AppColors.primary.withValues(alpha: 0.3),
+                        AppColors.primary.withValues(alpha: 0.0),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,

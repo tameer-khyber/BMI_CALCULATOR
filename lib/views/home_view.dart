@@ -92,7 +92,7 @@ class HomeView extends GetView<HomeController> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -110,7 +110,7 @@ class HomeView extends GetView<HomeController> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -156,7 +156,7 @@ class HomeView extends GetView<HomeController> {
                   width: 150,
                   height: 150,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -166,7 +166,7 @@ class HomeView extends GetView<HomeController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('current_bmi'.tr, style: AppStyles.cardLabel.copyWith(color: AppStyles.cardLabel.color?.withOpacity(0.7))),
+                      Text('current_bmi'.tr, style: AppStyles.cardLabel.copyWith(color: AppStyles.cardLabel.color?.withValues(alpha: 0.7))),
                       const SizedBox(width: 5),
                       const Icon(Icons.arrow_forward_ios, size: 10, color: Colors.white),
                     ],
@@ -180,7 +180,7 @@ class HomeView extends GetView<HomeController> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -193,7 +193,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Divider(color: Colors.white.withOpacity(0.1)),
+                  Divider(color: Colors.white.withValues(alpha: 0.1)),
                   const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,7 +222,7 @@ class HomeView extends GetView<HomeController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppStyles.cardLabel.copyWith(fontSize: 10, color: AppStyles.cardLabel.color?.withOpacity(0.6))),
+        Text(label, style: AppStyles.cardLabel.copyWith(fontSize: 10, color: AppStyles.cardLabel.color?.withValues(alpha: 0.6))),
         const SizedBox(height: 4),
         Text(value, style: AppStyles.bmiStatus.copyWith(fontSize: 14)),
       ],
@@ -302,7 +302,7 @@ class HomeView extends GetView<HomeController> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: AppColors.actionButton.withOpacity(0.3),
+            color: AppColors.actionButton.withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -380,7 +380,7 @@ class HomeView extends GetView<HomeController> {
                             color: Colors.white,
                             shape: BoxShape.circle,
                             boxShadow: [
-                              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
+                              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10),
                             ],
                           ),
                           child: const Icon(Icons.show_chart_rounded, color: AppColors.primary, size: 24),

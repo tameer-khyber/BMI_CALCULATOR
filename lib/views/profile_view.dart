@@ -225,7 +225,7 @@ class ProfileView extends GetView<HomeController> {
   Widget _buildGoalCard({required IconData icon, required String label, required String value, required String unit, required Color color, required BuildContext context}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : AppColors.textPrimary;
-    final iconBg = isDark ? Colors.white.withOpacity(0.1) : AppColors.primary.withOpacity(0.1);
+    final iconBg = isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primary.withValues(alpha: 0.1);
     final iconColor = isDark ? Colors.white : AppColors.primary;
 
     return Container(
@@ -240,14 +240,14 @@ class ProfileView extends GetView<HomeController> {
             child: Icon(icon, color: iconColor, size: 22),
           ),
           const SizedBox(height: 15),
-          Text(label, style: TextStyle(color: isDark ? Colors.white.withOpacity(0.7) : AppColors.textSecondary, fontSize: 12)),
+          Text(label, style: TextStyle(color: isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.textSecondary, fontSize: 12)),
           const SizedBox(height: 5),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(value, style: TextStyle(color: textColor, fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(width: 4),
-              Text(unit, style: TextStyle(color: isDark ? Colors.white.withOpacity(0.7) : AppColors.textSecondary, fontSize: 14, fontWeight: FontWeight.w500)),
+              Text(unit, style: TextStyle(color: isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.textSecondary, fontSize: 14, fontWeight: FontWeight.w500)),
             ],
           ),
         ],
@@ -271,7 +271,7 @@ class ProfileView extends GetView<HomeController> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withOpacity(0.1) : AppColors.primary.withOpacity(0.1), 
+                  color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primary.withValues(alpha: 0.1), 
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: isDark ? Colors.white : AppColors.primary, size: 26),
@@ -283,7 +283,7 @@ class ProfileView extends GetView<HomeController> {
                   children: [
                     Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16)),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7), fontSize: 13)),
+                    Text(subtitle, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7), fontSize: 13)),
                   ],
                 ),
               ),
@@ -291,11 +291,11 @@ class ProfileView extends GetView<HomeController> {
                 Switch(
                   value: toggleValue, 
                   onChanged: onToggle,
-                  activeColor: AppColors.primary,
-                  activeTrackColor: AppColors.primary.withOpacity(0.3),
+                  activeThumbColor: AppColors.primary, // activeColor likely not deprecated for Switch in all versions, but verify context. Log says line 294.
+                  activeTrackColor: AppColors.primary.withValues(alpha: 0.3),
                 )
               else
-                 Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+                 Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
             ],
           ),
         ),

@@ -44,11 +44,11 @@ class _SplashViewState extends State<SplashView> {
                       width: 280,
                       height: 280,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.8), // Placeholder color
+                        color: AppColors.primary.withValues(alpha: 0.8), // Placeholder color
                         borderRadius: BorderRadius.circular(40),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                             blurRadius: 30,
                             offset: const Offset(0, 15),
                           ),
@@ -66,7 +66,7 @@ class _SplashViewState extends State<SplashView> {
                               width: 80,
                               height: 80,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
+                                color: Colors.white.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -78,7 +78,7 @@ class _SplashViewState extends State<SplashView> {
                               width: 60,
                               height: 60,
                               decoration: BoxDecoration(
-                                color: AppColors.secondary.withOpacity(0.5),
+                                color: AppColors.secondary.withValues(alpha: 0.5),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -91,7 +91,7 @@ class _SplashViewState extends State<SplashView> {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   blurRadius: 20,
                                   offset: const Offset(0, 10),
                                 ),
@@ -127,7 +127,7 @@ class _SplashViewState extends State<SplashView> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withOpacity(0.3),
+                                color: AppColors.primary.withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),

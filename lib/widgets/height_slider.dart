@@ -25,7 +25,7 @@ class HeightSlider extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkBlue.withOpacity(0.08),
+            color: AppColors.darkBlue.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -36,7 +36,7 @@ class HeightSlider extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("HEIGHT", style: AppStyles.cardLabel),
+              Text("HEIGHT", style: AppStyles.cardLabel),
               GestureDetector(
                 onTap: onToggleUnit,
                 child: Container(
@@ -44,16 +44,16 @@ class HeightSlider extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.background,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.lightBlue.withOpacity(0.2)),
+                    border: Border.all(color: AppColors.lightBlue.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     children: [
                       Text("cm", style: TextStyle(
-                          color: isCm ? AppColors.darkBlue : AppColors.textSecondary.withOpacity(0.5),
+                          color: isCm ? AppColors.darkBlue : AppColors.textSecondary.withValues(alpha: 0.5),
                           fontWeight: FontWeight.bold, fontSize: 14)),
                       const Text(" / ", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                       Text("ft", style: TextStyle(
-                          color: !isCm ? AppColors.darkBlue : AppColors.textSecondary.withOpacity(0.5),
+                          color: !isCm ? AppColors.darkBlue : AppColors.textSecondary.withValues(alpha: 0.5),
                           fontWeight: FontWeight.bold, fontSize: 14)),
                     ],
                   ),
@@ -94,7 +94,7 @@ class HeightSlider extends StatelessWidget {
                     thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 18.0, elevation: 5),
                     overlayShape: const RoundSliderOverlayShape(overlayRadius: 30.0),
                     thumbColor: AppColors.red,
-                    overlayColor: AppColors.red.withOpacity(0.15),
+                    overlayColor: AppColors.red.withValues(alpha: 0.15),
                   ),
                   child: Slider(
                     value: height,
@@ -116,7 +116,7 @@ class RulerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = AppColors.textSecondary.withOpacity(0.3)
+      ..color = AppColors.textSecondary.withValues(alpha: 0.3)
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
@@ -137,7 +137,7 @@ class RulerPainter extends CustomPainter {
     
     // Draw center line
     final Paint centerPaint = Paint()
-      ..color = AppColors.textSecondary.withOpacity(0.1)
+      ..color = AppColors.textSecondary.withValues(alpha: 0.1)
       ..strokeWidth = 1;
       
     canvas.drawLine(

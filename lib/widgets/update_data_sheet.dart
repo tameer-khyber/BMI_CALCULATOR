@@ -21,10 +21,11 @@ class UpdateDataSheet extends GetView<HomeController> {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
           // Drag Handle
           Center(
             child: Container(
@@ -38,12 +39,12 @@ class UpdateDataSheet extends GetView<HomeController> {
           ),
           const SizedBox(height: 20),
 
-          // Header
+                // Header
           Row(
             children: [
               Expanded(
                 child: Text(
-                  "Update My Data",
+                  'update_data_title'.tr,
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -66,6 +67,7 @@ class UpdateDataSheet extends GetView<HomeController> {
           ),
           const SizedBox(height: 20),
 
+          
           // Unit Toggle
           Container(
             padding: const EdgeInsets.all(4),
@@ -115,7 +117,8 @@ class UpdateDataSheet extends GetView<HomeController> {
                             child: const Icon(Icons.monitor_weight_outlined, size: 16, color: AppColors.primary),
                           ),
                           const SizedBox(width: 8),
-                          Text("Current Weight", style: AppStyles.inputLabel.copyWith(fontSize: 12)),
+                          const SizedBox(width: 8),
+                          Flexible(child: Text('current_weight'.tr, style: AppStyles.inputLabel.copyWith(fontSize: 12))),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -166,7 +169,8 @@ class UpdateDataSheet extends GetView<HomeController> {
                             child: const Icon(Icons.height_rounded, size: 16, color: AppColors.secondaryDark),
                           ),
                           const SizedBox(width: 8),
-                          Text("Current Height", style: AppStyles.inputLabel.copyWith(fontSize: 12)),
+                          const SizedBox(width: 8),
+                          Flexible(child: Text('current_height'.tr, style: AppStyles.inputLabel.copyWith(fontSize: 12))),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -209,11 +213,11 @@ class UpdateDataSheet extends GetView<HomeController> {
                 controller.height.value = double.parse(heightController.text);
               }
               Get.back();
-              Get.snackbar("Success", "Data updated successfully", 
+              Get.snackbar('success_title'.tr, 'data_updated_msg'.tr, 
                 backgroundColor: AppColors.success, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, margin: const EdgeInsets.all(20));
             },
             icon: const Icon(Icons.save_rounded, color: Colors.white),
-            label: Text("Save Changes", style: AppStyles.buttonText),
+            label: Text('save_changes'.tr, style: AppStyles.buttonText),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.actionButton,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -221,7 +225,7 @@ class UpdateDataSheet extends GetView<HomeController> {
                 borderRadius: BorderRadius.circular(16),
               ),
               elevation: 4,
-              shadowColor: AppColors.actionButton.withOpacity(0.4),
+              shadowColor: AppColors.actionButton.withValues(alpha: 0.4),
             ),
           ),
           const SizedBox(height: 20),
@@ -239,8 +243,11 @@ class UpdateDataSheet extends GetView<HomeController> {
                 );
               }),
           ),
+          
           const SizedBox(height: 10), // Bottom safe area spacing
+          
         ],
+      ),
       ),
     );
   }
@@ -256,7 +263,7 @@ class UpdateDataSheet extends GetView<HomeController> {
             borderRadius: BorderRadius.circular(10),
             boxShadow: isSelected ? [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               )

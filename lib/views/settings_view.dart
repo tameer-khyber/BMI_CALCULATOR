@@ -22,7 +22,7 @@ class SettingsView extends StatelessWidget {
         child: Stack(
           children: [
             SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,19 +56,19 @@ class SettingsView extends StatelessWidget {
                     Icons.lock_outline, 
                     'privacy_policy'.tr, 
                     "", 
-                    onTap: () => _showTopModal(context, 'privacy_policy'.tr, "This is a placeholder for the Privacy Policy. Your data is safe with us!")
+                    onTap: () => _showTopModal(context, 'privacy_policy'.tr, 'privacy_policy_content'.tr)
                   ),
                   _buildSettingTile(
                     Icons.help_outline, 
                     'help_support'.tr, 
                     "", 
-                    onTap: () => _showTopModal(context, 'help_support'.tr, "Need help? Contact support@example.com")
+                    onTap: () => _showTopModal(context, 'help_support'.tr, 'help_support_content'.tr)
                   ),
                   _buildSettingTile(
                     Icons.info_outline, 
                     'about_app'.tr, 
                     "", 
-                    onTap: () => _showTopModal(context, 'about_app'.tr, "BMI Calculator v1.0.0\nBuilt with Flutter & GetX")
+                    onTap: () => _showTopModal(context, 'about_app'.tr, 'about_app_content'.tr)
                   ),
                   const SizedBox(height: 20),
                   _buildSectionTitle('account'.tr),
@@ -115,7 +115,7 @@ class SettingsView extends StatelessWidget {
         color: Get.theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Row(
@@ -126,7 +126,7 @@ class SettingsView extends StatelessWidget {
           if (value.isNotEmpty)
             Text(value, style: TextStyle(color: Get.theme.textTheme.bodySmall?.color ?? AppColors.textSecondary, fontWeight: FontWeight.w500)),
           const SizedBox(width: 10),
-          if (!isDestructive) Icon(Icons.arrow_forward_ios, size: 16, color: Get.theme.iconTheme.color?.withOpacity(0.5)),
+          if (!isDestructive) Icon(Icons.arrow_forward_ios, size: 16, color: Get.theme.iconTheme.color?.withValues(alpha: 0.5)),
         ],
       ),
     ), // Close Container
@@ -148,7 +148,7 @@ class SettingsView extends StatelessWidget {
               duration: const Duration(milliseconds: 500),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.1) : Colors.orange.withOpacity(0.1),
+                color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: AnimatedSwitcher(
@@ -267,7 +267,7 @@ class SettingsView extends StatelessWidget {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Get.theme.dialogBackgroundColor,
+        backgroundColor: Get.theme.dialogTheme.backgroundColor,
         child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -279,8 +279,8 @@ class SettingsView extends StatelessWidget {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => Get.back(), 
-                  child: Text('close'.tr, style: const TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                  child: Text('close'.tr, style: const TextStyle(color: Colors.white)),
                 )
               ],
             )
@@ -297,7 +297,7 @@ class SettingsView extends StatelessWidget {
         color: Get.theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Row(
@@ -308,7 +308,7 @@ class SettingsView extends StatelessWidget {
           Switch(
             value: value, 
             onChanged: onChanged,
-            activeColor: AppColors.primary,
+            activeThumbColor: AppColors.primary,
           ),
         ],
       ),

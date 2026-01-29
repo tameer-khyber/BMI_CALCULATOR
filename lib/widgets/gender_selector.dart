@@ -21,7 +21,7 @@ class GenderSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkBlue.withOpacity(0.08),
+            color: AppColors.darkBlue.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -58,7 +58,7 @@ class GenderSelector extends StatelessWidget {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: AppColors.lightBlue.withOpacity(0.4),
+                      color: AppColors.lightBlue.withValues(alpha: 0.4),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -73,7 +73,7 @@ class GenderSelector extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 50,
-                  color: isSelected ? Colors.white : AppColors.textSecondary.withOpacity(0.5),
+                  color: isSelected ? Colors.white : AppColors.textSecondary.withValues(alpha: 0.5),
                 ),
               ),
               const SizedBox(height: 12),
