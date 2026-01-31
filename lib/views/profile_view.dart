@@ -8,6 +8,7 @@ import '../view_models/home_controller.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../widgets/update_data_sheet.dart';
 import '../res/routes.dart';
+import '../view_models/auth_controller.dart';
 
 class ProfileView extends GetView<HomeController> {
   const ProfileView({Key? key}) : super(key: key);
@@ -169,7 +170,7 @@ class ProfileView extends GetView<HomeController> {
                            confirmTextColor: Colors.white,
                            onConfirm: () {
                              Get.back();
-                             Get.offAllNamed(AppRoutes.splash); // Restart app demo
+                             Get.find<AuthController>().logout();
                            },
                            onCancel: () => Get.back(),
                          );

@@ -110,6 +110,7 @@ class Messages extends Translations {
           'privacy_policy_content': 'This is a placeholder for the Privacy Policy. Your data is safe with us!',
           'help_support_content': 'Need help? Contact support@example.com',
           'about_app_content': 'BMI Calculator v1.0.0\nBuilt with Flutter & GetX',
+          'cancel': 'Cancel',
         },
         'es_ES': {
           'dashboard_title': 'Calculadora BMI',
@@ -218,6 +219,7 @@ class Messages extends Translations {
           'privacy_policy_content': 'Este es un marcador de posición para la Política de privacidad. ¡Tus datos están seguros con nosotros!',
           'help_support_content': '¿Necesitas ayuda? Contacta support@example.com',
           'about_app_content': 'Calculadora BMI v1.0.0\nConstruido con Flutter y GetX',
+          'cancel': 'Cancelar',
         },
         'fr_FR': {
           'dashboard_title': 'Calculatrice Imc',
@@ -323,6 +325,7 @@ class Messages extends Translations {
           'privacy_policy_content': 'Ceci est un espace réservé pour la politique de confidentialité. Vos données sont en sécurité avec nous!',
           'help_support_content': 'Besoin d\'aide ? Contactez support@example.com',
           'about_app_content': 'Calculatrice IMC v1.0.0\nConstruit avec Flutter & GetX',
+          'cancel': 'Annuler',
         },
         'hi_IN': {
            'dashboard_title': 'बीएमआई कैलकुलेटर',
@@ -396,6 +399,7 @@ class Messages extends Translations {
           'privacy_policy_content': 'यह गोपनीयता नीति के लिए एक प्लेसहोल्डर है। आपका डेटा हमारे पास सुरक्षित है!',
           'help_support_content': 'मदद चाहिए? support@example.com पर संपर्क करें',
           'about_app_content': 'बीएमआई कैलकुलेटर v1.0.0\nFlutter और GetX के साथ निर्मित',
+          'cancel': 'रद्द करें',
         },
         'zh_CN': {
            'dashboard_title': 'BMI 计算器',
@@ -469,6 +473,7 @@ class Messages extends Translations {
           'privacy_policy_content': '这是隐私政策的占位符。您的数据对我们很安全！',
           'help_support_content': '需要帮助？联系 support@example.com',
           'about_app_content': 'BMI 计算器 v1.0.0\n使用 Flutter & GetX 构建',
+          'cancel': '取消',
         },
          'ar_SA': {
            'dashboard_title': 'حاسبة مؤشر كتلة الجسم',
@@ -542,6 +547,7 @@ class Messages extends Translations {
           'privacy_policy_content': 'هذا عنصر نائب لسياسة الخصوصية. بياناتك آمنة معنا!',
           'help_support_content': 'تحتاج مساعدة؟ اتصل بـ support@example.com',
           'about_app_content': 'حاسبة BMI الإصدار v1.0.0\nتم إنشاؤه باستخدام Flutter & GetX',
+          'cancel': 'إلغاء',
         },
       };
 }

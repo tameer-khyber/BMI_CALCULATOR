@@ -91,8 +91,7 @@ class HealthInsightsView extends StatelessWidget {
                           item.bgColor,
                           item.iconColor,
                           description: item.description,
-                          // Only use placeholder images for online demo if needed, or pass null to use icon design
-                          imagePath: null, 
+                          imagePath: item.imagePath, 
                         );
                       },
                     );
@@ -197,7 +196,9 @@ class HealthInsightsView extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           image: imagePath != null 
             ? DecorationImage(
-                image: AssetImage(imagePath),
+                image: imagePath.startsWith('http') 
+                  ? NetworkImage(imagePath) as ImageProvider
+                  : AssetImage(imagePath),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.4), BlendMode.darken),
               ) 

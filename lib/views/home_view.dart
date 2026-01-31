@@ -342,7 +342,7 @@ class HomeView extends GetView<HomeController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('recent_progress'.tr, style: AppStyles.sectionHeader),
+          Text('recent_progress'.tr, style: AppStyles.sectionHeader.copyWith(color: Theme.of(Get.context!).textTheme.titleLarge?.color ?? Theme.of(Get.context!).textTheme.bodyLarge?.color)),
             TextButton(
               onPressed: () => Get.toNamed(AppRoutes.history),
               child: Text('see_all'.tr, style: AppStyles.seeAll),
@@ -390,11 +390,11 @@ class HomeView extends GetView<HomeController> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(DateFormat('MMM d, yyyy').format(record.date), style: AppStyles.inputLabel),
+                          Text(DateFormat('MMM d, yyyy').format(record.date), style: AppStyles.inputLabel.copyWith(color: Theme.of(Get.context!).textTheme.bodyLarge?.color)),
                           const SizedBox(height: 4),
                           Obx(() => Text(
                             "${'weight'.tr}: ${record.weight} ${controller.selectedUnit.value == LengthUnit.cm ? 'kg' : 'lbs'}", 
-                            style: AppStyles.welcomeText
+                            style: AppStyles.welcomeText.copyWith(color: Theme.of(Get.context!).textTheme.bodyMedium?.color)
                           )),
                         ],
                       ),

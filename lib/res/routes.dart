@@ -7,6 +7,9 @@ import '../views/statistics_view.dart';
 import '../views/health_insights_view.dart';
 import '../views/settings_view.dart';
 import '../views/splash_view.dart';
+import '../views/login_view.dart';
+import '../views/register_view.dart';
+import '../views/forgot_password_view.dart';
 // ...
 
 class AppRoutes {
@@ -17,7 +20,10 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String statistics = '/statistics';
   static const String healthInsights = '/health-insights';
-  static const String settings = '/settings'; // Added route // Added route
+  static const String settings = '/settings'; // Added route
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String forgotPassword = '/forgot-password';
 
   static final pages = [
     GetPage(
@@ -58,6 +64,21 @@ class AppRoutes {
       name: settings,
       page: () => const SettingsView(),
       transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: login,
+      page: () => const LoginView(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: register,
+      page: () => const RegisterView(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: forgotPassword,
+      page: () => const ForgotPasswordView(),
+      transition: Transition.rightToLeft,
     ),
   ];
 }

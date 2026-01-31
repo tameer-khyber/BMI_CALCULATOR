@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../res/colors.dart';
 import '../res/styles.dart';
 import '../view_models/home_controller.dart';
+import 'primary_button.dart';
 
 class UpdateDataSheet extends GetView<HomeController> {
   const UpdateDataSheet({Key? key}) : super(key: key);
@@ -203,7 +204,7 @@ class UpdateDataSheet extends GetView<HomeController> {
           const SizedBox(height: 30),
 
           // Save Button
-          ElevatedButton.icon(
+          PrimaryButton(
             onPressed: () {
               // Save logic
               if (weightController.text.isNotEmpty) {
@@ -216,17 +217,10 @@ class UpdateDataSheet extends GetView<HomeController> {
               Get.snackbar('success_title'.tr, 'data_updated_msg'.tr, 
                 backgroundColor: AppColors.success, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, margin: const EdgeInsets.all(20));
             },
-            icon: const Icon(Icons.save_rounded, color: Colors.white),
-            label: Text('save_changes'.tr, style: AppStyles.buttonText),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.actionButton,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 4,
-              shadowColor: AppColors.actionButton.withValues(alpha: 0.4),
-            ),
+            icon: Icons.save_rounded,
+            label: 'save_changes'.tr,
+            backgroundColor: AppColors.actionButton,
+            height: 56, // Matching standard button height or slightly smaller if needed
           ),
           const SizedBox(height: 20),
           Center(

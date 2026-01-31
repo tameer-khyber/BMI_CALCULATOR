@@ -8,6 +8,7 @@ import '../widgets/custom_bottom_nav.dart';
 import '../res/routes.dart';
 import '../view_models/language_controller.dart';
 import '../view_models/settings_controller.dart';
+import '../view_models/auth_controller.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -53,7 +54,7 @@ class SettingsView extends StatelessWidget {
                   const SizedBox(height: 20),
                   _buildSectionTitle('privacy_security'.tr),
                   _buildSettingTile(
-                    Icons.lock_outline, 
+                    Icons.lock_outline,
                     'privacy_policy'.tr, 
                     "", 
                     onTap: () => _showTopModal(context, 'privacy_policy'.tr, 'privacy_policy_content'.tr)
@@ -72,7 +73,9 @@ class SettingsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   _buildSectionTitle('account'.tr),
-                  _buildSettingTile(Icons.logout, 'sign_out'.tr, "", isDestructive: true),
+                  _buildSettingTile(Icons.logout, 'sign_out'.tr, "", isDestructive: true, onTap: () {
+                    _showLogoutConfirmation(context);
+                  }),
                 ],
               ),
             ),
@@ -286,6 +289,51 @@ class SettingsView extends StatelessWidget {
             )
         ),
       )
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Get.theme.dialogTheme.backgroundColor,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('sign_out'.tr, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color)),
+              const SizedBox(height: 15),
+              Text('sign_out_confirm'.tr, textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                   OutlinedButton(
+                    onPressed: () => Get.back(),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.textSecondary),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text('cancel'.tr, style: TextStyle(color: AppColors.textSecondary)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                       Get.back(); // Close dialog
+                       Get.find<AuthController>().logout();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.error,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text('sign_out'.tr, style: const TextStyle(color: Colors.white)),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 

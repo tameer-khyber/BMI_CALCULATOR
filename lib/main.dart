@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'res/theme.dart';
@@ -7,10 +9,14 @@ import 'view_models/history_controller.dart';
 import 'res/routes.dart';
 import 'res/messages.dart';
 import 'view_models/language_controller.dart';
+import 'view_models/auth_controller.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   
   // Lock orientation to portrait mode only
   await SystemChrome.setPreferredOrientations([
@@ -30,6 +36,7 @@ class BmiApp extends StatelessWidget {
     // Inject Controllers
     Get.put(HistoryController());
     Get.put(HomeController());
+    Get.put(AuthController());
     final languageController = Get.put(LanguageController());
 
     return GetMaterialApp(

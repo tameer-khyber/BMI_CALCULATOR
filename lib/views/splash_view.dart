@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../res/colors.dart';
 import '../res/routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
@@ -16,8 +17,12 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 4), () {
-      Get.offNamed(AppRoutes.home);
+    Future.delayed(const Duration(seconds: 3), () {
+       if (FirebaseAuth.instance.currentUser != null) {
+         Get.offNamed(AppRoutes.home);
+       } else {
+         Get.offNamed(AppRoutes.login);
+       }
     });
   }
 

@@ -54,16 +54,65 @@ class HistoryView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Get.theme.cardColor,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10),
-                          ],
+                      InkWell(
+                        onTap: () {
+                          // Show options bottom sheet
+                          Get.bottomSheet(
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Get.theme.scaffoldBackgroundColor,
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ListTile(
+                                    leading: const Icon(Icons.delete_outline, color: AppColors.error),
+                                    title: Text('Clear History', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)), // Using hardcoded or add to messages
+                                    onTap: () {
+                                      Get.back(); // Close sheet
+                                      _showClearHistoryConfirmation(context, controller);
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: OutlinedButton(
+                                      onPressed: () => Get.back(), 
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(vertical: 15),
+                                        side: BorderSide(color: AppColors.textSecondary.withValues(alpha: 0.3)),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                      ),
+                                      child: Text('cancel'.tr, style: TextStyle(color: AppColors.textSecondary)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Get.theme.cardColor,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10),
+                            ],
+                          ),
+                          child: const Icon(Icons.filter_list_rounded, color: AppColors.primary, size: 24),
                         ),
-                        child: const Icon(Icons.filter_list_rounded, color: AppColors.primary, size: 24),
                       ),
                     ],
                   ),
@@ -281,5 +330,51 @@ class HistoryView extends StatelessWidget {
       case 'obese': return AppColors.error;
       default: return AppColors.primary;
     }
+  }
+
+  void _showClearHistoryConfirmation(BuildContext context, HistoryController controller) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Get.theme.dialogTheme.backgroundColor,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Clear History', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color)),
+              const SizedBox(height: 15),
+              Text('Are you sure you want to delete all history records? This action cannot be undone.', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                   OutlinedButton(
+                    onPressed: () => Get.back(),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.textSecondary),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text('cancel'.tr, style: TextStyle(color: AppColors.textSecondary)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                       Get.back(); // Close dialog
+                       controller.clearHistory();
+                       Get.snackbar("Success", "History cleared successfully", snackPosition: SnackPosition.BOTTOM, margin: const EdgeInsets.all(20), backgroundColor: AppColors.success, colorText: Colors.white, borderRadius: 20);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.error,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text('Clear', style: const TextStyle(color: Colors.white)),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
