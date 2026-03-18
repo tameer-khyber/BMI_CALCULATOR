@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../res/colors.dart';
 
@@ -17,8 +18,12 @@ class CustomBottomNav extends StatelessWidget {
       margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       height: 70,
       decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
+        color: (Theme.of(context).cardTheme.color ?? Colors.white).withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(35),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.05 : 0.4),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -27,17 +32,23 @@ class CustomBottomNav extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildNavItem(Icons.grid_view_rounded, 0),
-          _buildNavItem(Icons.bar_chart_rounded, 1),
-          // _buildNavItem(Icons.widgets_rounded, 2), // Removed as per request
-          _buildAddButton(),
-          _buildNavItem(Icons.history_rounded, 3),
-          // _buildNavItem(Icons.person_outline_rounded, 4), // Moved to Header
-          _buildNavItem(Icons.settings_rounded, 5),
-        ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(35),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildNavItem(Icons.grid_view_rounded, 0),
+              _buildNavItem(Icons.bar_chart_rounded, 1),
+              // _buildNavItem(Icons.widgets_rounded, 2), // Removed as per request
+              _buildAddButton(),
+              _buildNavItem(Icons.history_rounded, 3),
+              // _buildNavItem(Icons.person_outline_rounded, 4), // Moved to Header
+              _buildNavItem(Icons.settings_rounded, 5),
+            ],
+          ),
+        ),
       ),
     );
   }

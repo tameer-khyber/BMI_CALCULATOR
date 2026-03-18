@@ -213,6 +213,7 @@ class UpdateDataSheet extends GetView<HomeController> {
               if (heightController.text.isNotEmpty) {
                 controller.height.value = double.parse(heightController.text);
               }
+              controller.saveCurrentBmiToHistory();
               Get.back();
               Get.snackbar('success_title'.tr, 'data_updated_msg'.tr, 
                 backgroundColor: AppColors.success, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM, margin: const EdgeInsets.all(20));

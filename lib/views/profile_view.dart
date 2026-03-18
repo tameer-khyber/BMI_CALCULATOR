@@ -1,17 +1,312 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart'; // For kIsWeb
 import '../res/colors.dart';
 import '../res/styles.dart';
 import '../res/decorations.dart';
 import '../view_models/home_controller.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../widgets/update_data_sheet.dart';
+import '../widgets/custom_bottom_sheet.dart';
 import '../res/routes.dart';
 import '../view_models/auth_controller.dart';
+import '../utils/app_toast.dart';
+import 'privacy_policy_view.dart'; // Added import
 
 class ProfileView extends GetView<HomeController> {
   const ProfileView({Key? key}) : super(key: key);
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      if (kIsWeb) {
+        // For web we only store the network path / blob URL or file path might not work correctly across reloads without proper storage
+        // Assuming we use path here just to show it temporarily on web, or the user can connect it to Firebase Storage later
+        controller.updateProfileImage(image.path);
+      } else {
+        controller.updateProfileImage(image.path);
+      }
+    }
+  }
+
+  void _editNameDialog(BuildContext context) {
+    final TextEditingController nameController = TextEditingController(text: controller.userName.value);
+    CustomBottomSheet.show(
+      title: 'Edit Name',
+      content: TextField(
+        controller: nameController,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: InputDecoration(
+          hintText: 'Enter your name',
+          hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
+          filled: true,
+          fillColor: Theme.of(context).brightness == Brightness.dark 
+              ? Colors.white.withValues(alpha: 0.05) 
+              : Colors.black.withValues(alpha: 0.05),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        ),
+      ),
+      primaryButton: ElevatedButton(
+        onPressed: () {
+          if (nameController.text.trim().isNotEmpty) {
+            controller.updateUserName(nameController.text.trim());
+            AppToast.showSuccess('Success', 'Name updated successfully');
+          }
+          Get.back();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+        ),
+        child: const Text('Save', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+      secondaryButton: OutlinedButton(
+        onPressed: () => Get.back(),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          side: BorderSide(color: Theme.of(context).dividerColor),
+        ),
+        child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  void _editAgeDialog(BuildContext context) {
+    final TextEditingController ageController = TextEditingController(text: controller.userAge.value.toString());
+    CustomBottomSheet.show(
+      title: 'Edit Age',
+      content: TextField(
+        controller: ageController,
+        keyboardType: TextInputType.number,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: InputDecoration(
+          hintText: 'Enter your age',
+          hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
+          filled: true,
+          fillColor: Theme.of(context).brightness == Brightness.dark 
+              ? Colors.white.withValues(alpha: 0.05) 
+              : Colors.black.withValues(alpha: 0.05),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        ),
+      ),
+      primaryButton: ElevatedButton(
+        onPressed: () {
+          if (ageController.text.trim().isNotEmpty) {
+            int? parsed = int.tryParse(ageController.text.trim());
+            if (parsed != null) {
+              controller.updateUserAge(parsed);
+              AppToast.showSuccess('Success', 'Age updated successfully');
+            }
+          }
+          Get.back();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+        ),
+        child: const Text('Save', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+      secondaryButton: OutlinedButton(
+        onPressed: () => Get.back(),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          side: BorderSide(color: Theme.of(context).dividerColor),
+        ),
+        child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  void _editGenderDialog(BuildContext context) {
+    CustomBottomSheet.show(
+      title: 'Edit Gender',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: ['Male', 'Female', 'Other'].map((g) => ListTile(
+          title: Text(g, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+          trailing: Obx(() => controller.userGender.value == g ? const Icon(Icons.check, color: AppColors.primary) : const SizedBox.shrink()),
+          onTap: () {
+            controller.updateUserGender(g);
+            AppToast.showSuccess('Success', 'Gender updated successfully');
+            Get.back();
+          },
+        )).toList(),
+      ),
+      primaryButton: ElevatedButton(
+        onPressed: () => Get.back(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+        ),
+        child: const Text('Close', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  void _editTargetWeightDialog(BuildContext context) {
+    final TextEditingController weightController = TextEditingController(text: controller.targetWeight.value.toString());
+    CustomBottomSheet.show(
+      title: 'Edit Target Weight',
+      content: TextField(
+        controller: weightController,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: InputDecoration(
+          hintText: 'Enter target weight',
+          hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
+          filled: true,
+          fillColor: Theme.of(context).brightness == Brightness.dark 
+              ? Colors.white.withValues(alpha: 0.05) 
+              : Colors.black.withValues(alpha: 0.05),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        ),
+      ),
+      primaryButton: ElevatedButton(
+        onPressed: () {
+          if (weightController.text.trim().isNotEmpty) {
+            double? parsed = double.tryParse(weightController.text.trim());
+            if (parsed != null) {
+              controller.updateTargetWeight(parsed);
+              AppToast.showSuccess('Success', 'Target weight updated successfully');
+            }
+          }
+          Get.back();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+        ),
+        child: const Text('Save', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+      secondaryButton: OutlinedButton(
+        onPressed: () => Get.back(),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          side: BorderSide(color: Theme.of(context).dividerColor),
+        ),
+        child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  void _editTargetBmiDialog(BuildContext context) {
+    final TextEditingController bmiController = TextEditingController(text: controller.targetBmi.value.toString());
+    CustomBottomSheet.show(
+      title: 'Edit Target BMI',
+      content: TextField(
+        controller: bmiController,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        decoration: InputDecoration(
+          hintText: 'Enter target BMI',
+          hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
+          filled: true,
+          fillColor: Theme.of(context).brightness == Brightness.dark 
+              ? Colors.white.withValues(alpha: 0.05) 
+              : Colors.black.withValues(alpha: 0.05),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        ),
+      ),
+      primaryButton: ElevatedButton(
+        onPressed: () {
+          if (bmiController.text.trim().isNotEmpty) {
+            double? parsed = double.tryParse(bmiController.text.trim());
+            if (parsed != null) {
+              controller.updateTargetBmi(parsed);
+              AppToast.showSuccess('Success', 'Target BMI updated successfully');
+            }
+          }
+          Get.back();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+        ),
+        child: const Text('Save', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+      secondaryButton: OutlinedButton(
+        onPressed: () => Get.back(),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          side: BorderSide(color: Theme.of(context).dividerColor),
+        ),
+        child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  void _editMeasurementUnitsDialog(BuildContext context) {
+    CustomBottomSheet.show(
+      title: 'Measurement Units',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Obx(() => ListTile(
+            title: Text('Metric (kg, cm)', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+            trailing: controller.selectedUnit.value == LengthUnit.cm ? const Icon(Icons.check, color: AppColors.primary) : const SizedBox.shrink(),
+            onTap: () {
+              controller.selectedUnit.value = LengthUnit.cm;
+              AppToast.showSuccess('Success', 'Switched to Metric units');
+              Get.back();
+            },
+          )),
+          Obx(() => ListTile(
+            title: Text('Imperial (lbs, ft)', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+            trailing: controller.selectedUnit.value == LengthUnit.ft ? const Icon(Icons.check, color: AppColors.primary) : const SizedBox.shrink(),
+            onTap: () {
+              controller.selectedUnit.value = LengthUnit.ft;
+              AppToast.showSuccess('Success', 'Switched to Imperial units');
+              Get.back();
+            },
+          )),
+        ],
+      ),
+      primaryButton: ElevatedButton(
+        onPressed: () => Get.back(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+        ),
+        child: const Text('Close', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,37 +347,75 @@ class ProfileView extends GetView<HomeController> {
                           shape: BoxShape.circle,
                           border: Border.all(color: AppColors.primary, width: 3),
                         ),
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundColor: AppColors.weightCard,
-                          // transform: Matrix4.rotationY(3.14), // Mirror to look like the image if needed
-                          child: Image.asset('assets/images/user_avatar.png', errorBuilder: (c,o,s) => const Icon(Icons.person, size: 60, color: AppColors.primary)),
-                        ),
+                        child: Obx(() {
+                          final imagePath = controller.profileImagePath.value;
+                          ImageProvider imageProvider;
+                          if (imagePath.isNotEmpty) {
+                            if (kIsWeb) {
+                              imageProvider = NetworkImage(imagePath);
+                            } else {
+                              imageProvider = FileImage(File(imagePath));
+                            }
+                          } else {
+                            imageProvider = const AssetImage('assets/images/user_avatar.png');
+                          }
+                          return CircleAvatar(
+                            radius: 60,
+                            backgroundColor: AppColors.weightCard,
+                            backgroundImage: imageProvider,
+                            child: imagePath.isEmpty
+                                ? Image.asset('assets/images/user_avatar.png', errorBuilder: (c, o, s) => const Icon(Icons.person, size: 60, color: AppColors.primary))
+                                : null,
+                          );
+                        }),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: AppColors.actionButton,
-                          shape: BoxShape.circle,
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.actionButton,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                          ),
                         ),
-                        child: const Icon(Icons.edit, color: Colors.white, size: 16),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
 
                   // Name & Details
-                  Obx(() => Text(
-                    controller.userName.value,
-                    style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color),
-                  )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(() => Text(
+                        controller.userName.value,
+                        style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color),
+                      )),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => _editNameDialog(context),
+                        child: const Icon(Icons.edit, size: 20, color: AppColors.primary),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildTag("${controller.userAge.value} ${'years'.tr}", AppColors.weightCard, AppColors.primary),
+                      GestureDetector(
+                        onTap: () => _editAgeDialog(context),
+                        child: Obx(() => _buildTag("${controller.userAge.value} ${'years'.tr}", AppColors.weightCard, AppColors.primary, true)),
+                      ),
                       const SizedBox(width: 10),
-                      _buildTag(controller.userGender.value, AppColors.heightCard, AppColors.secondaryDark),
+                      GestureDetector(
+                        onTap: () => _editGenderDialog(context),
+                        child: Obx(() => _buildTag(controller.userGender.value, AppColors.heightCard, AppColors.secondaryDark, true)),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -110,24 +443,30 @@ class ProfileView extends GetView<HomeController> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildGoalCard(
-                          icon: Icons.track_changes, 
-                          label: 'target_weight'.tr, 
-                          value: "${controller.targetWeight.value}", 
-                          unit: "kg",
-                          color: AppColors.weightCard,
-                          context: context
+                        child: GestureDetector(
+                          onTap: () => _editTargetWeightDialog(context),
+                          child: Obx(() => _buildGoalCard(
+                            icon: Icons.track_changes, 
+                            label: 'target_weight'.tr, 
+                            value: "${controller.targetWeight.value}", 
+                            unit: "kg",
+                            color: AppColors.weightCard,
+                            context: context
+                          )),
                         ),
                       ),
                       const SizedBox(width: 15),
                       Expanded(
-                        child: _buildGoalCard(
-                          icon: Icons.speed, 
-                          label: 'target_bmi'.tr, 
-                          value: "${controller.targetBmi.value}", 
-                          unit: "",
-                          color: AppColors.heightCard,
-                          context: context
+                        child: GestureDetector(
+                          onTap: () => _editTargetBmiDialog(context),
+                          child: Obx(() => _buildGoalCard(
+                            icon: Icons.speed, 
+                            label: 'target_bmi'.tr, 
+                            value: controller.targetBmi.value.toStringAsFixed(1), 
+                            unit: "",
+                            color: AppColors.heightCard,
+                            context: context
+                          )),
                         ),
                       ),
                     ],
@@ -140,9 +479,15 @@ class ProfileView extends GetView<HomeController> {
                     child: Text('preferences'.tr, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleLarge?.color)),
                   ),
                   const SizedBox(height: 15),
-                  _buildMenuItem(Icons.straighten, 'measurement_units'.tr, 'metric_units'.tr, context, onTap: () {
-                    Get.snackbar("Preferences", "Unit selection coming soon!", backgroundColor: Theme.of(context).cardColor, colorText: Theme.of(context).textTheme.bodyLarge?.color);
-                  }),
+                  Obx(() => _buildMenuItem(
+                    Icons.straighten, 
+                    'measurement_units'.tr, 
+                    controller.selectedUnit.value == LengthUnit.cm ? 'Metric (kg, cm)' : 'Imperial (lbs, ft)', 
+                    context, 
+                    onTap: () {
+                      _editMeasurementUnitsDialog(context);
+                    }
+                  )),
                   const SizedBox(height: 15),
                   Obx(() => _buildMenuItem(
                     Icons.notifications_active, 
@@ -156,7 +501,7 @@ class ProfileView extends GetView<HomeController> {
                   const SizedBox(height: 15),
                   const SizedBox(height: 15),
                   _buildMenuItem(Icons.lock, 'privacy_security'.tr, 'manage_data'.tr, context, onTap: () {
-                    Get.snackbar("Privacy", "Privacy settings coming soon!", backgroundColor: Theme.of(context).cardColor, colorText: Theme.of(context).textTheme.bodyLarge?.color);
+                    Get.to(() => const PrivacyPolicyView());
                   }),
                   const SizedBox(height: 15),
                   // Log out or button
@@ -209,16 +554,25 @@ class ProfileView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildTag(String text, Color bgColor, Color textColor) {
+  Widget _buildTag(String text, Color bgColor, Color textColor, [bool isEditable = false]) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        text,
-        style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 12),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            text,
+            style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 12),
+          ),
+          if (isEditable) ...[
+            const SizedBox(width: 6),
+            Icon(Icons.edit, size: 12, color: textColor.withValues(alpha: 0.7)),
+          ]
+        ],
       ),
     );
   }
@@ -235,10 +589,16 @@ class ProfileView extends GetView<HomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
-            child: Icon(icon, color: iconColor, size: 22),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
+                child: Icon(icon, color: iconColor, size: 22),
+              ),
+              Icon(Icons.edit, size: 16, color: isDark ? Colors.white.withValues(alpha: 0.5) : AppColors.textSecondary.withValues(alpha: 0.5)),
+            ],
           ),
           const SizedBox(height: 15),
           Text(label, style: TextStyle(color: isDark ? Colors.white.withValues(alpha: 0.7) : AppColors.textSecondary, fontSize: 12)),

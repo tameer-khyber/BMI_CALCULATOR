@@ -99,7 +99,17 @@ class InsightDetailView extends StatelessWidget {
                    SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.back();
+                        Get.snackbar(
+                          "Session Started",
+                          "You have successfully started the $title session!",
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: AppColors.success,
+                          colorText: Colors.white,
+                          margin: const EdgeInsets.all(20),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,

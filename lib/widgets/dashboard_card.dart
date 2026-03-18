@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../res/colors.dart';
 import '../res/decorations.dart';
@@ -20,10 +21,16 @@ class DashboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: padding ?? const EdgeInsets.all(16),
-        decoration: AppDecorations.dashboardCardDecoration(context, color: color),
-        child: child,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: padding ?? const EdgeInsets.all(16),
+            decoration: AppDecorations.dashboardGlassDecoration(context, color: color),
+            child: child,
+          ),
+        ),
       ),
     );
   }

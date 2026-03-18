@@ -1,7 +1,5 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:flutter/foundation.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -16,25 +14,18 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB(String filePath) async {
-    // Web support check
-    if (kIsWeb) {
-      var factory = databaseFactoryFfiWeb;
-      return await factory.openDatabase(filePath,
-          options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: _createDB,
-          ));
-    }
-    
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 2, onCreate: _createDB, onUpgrade: _onUpgrade);
+    return await openDatabase(path, version: 3, onCreate: _createDB, onUpgrade: _onUpgrade);
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      await db.execute('ALTER TABLE history ADD COLUMN weight REAL');
+      await db.execute('ALTER TABLE history ADD COLUMN weight REAL DEFAULT 0.0');
+    }
+    if (oldVersion < 3) {
+      await db.execute("ALTER TABLE history ADD COLUMN userId TEXT DEFAULT ''");
     }
   }
 
@@ -46,6 +37,7 @@ class DatabaseHelper {
     await db.execute('''
 CREATE TABLE history ( 
   id $idType, 
+  userId $textType,
   date $textType,
   bmi $realType,
   weight $realType,
@@ -59,10 +51,10 @@ CREATE TABLE history (
     return await db.insert('history', json);
   }
 
-  Future<List<Map<String, dynamic>>> readAllHistory() async {
+  Future<List<Map<String, dynamic>>> readHistoryForUser(String userId) async {
     final db = await instance.database;
     const orderBy = 'date DESC';
-    return await db.query('history', orderBy: orderBy);
+    return await db.query('history', where: 'userId = ?', whereArgs: [userId], orderBy: orderBy);
   }
 
   Future<int> delete(int id) async {
@@ -74,9 +66,9 @@ CREATE TABLE history (
     );
   }
   
-  Future<int> deleteAll() async {
+  Future<int> deleteAllForUser(String userId) async {
     final db = await instance.database;
-    return await db.delete('history');
+    return await db.delete('history', where: 'userId = ?', whereArgs: [userId]);
   }
 
   Future close() async {

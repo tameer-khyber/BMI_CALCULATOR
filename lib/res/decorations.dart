@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
@@ -48,6 +49,28 @@ class AppDecorations {
           color: Colors.blueGrey.withValues(alpha: 0.1),
           blurRadius: 12,
           offset: const Offset(0, 4),
+        ),
+      ],
+    );
+  }
+
+  /// Glassmorphic Dashboard Card Decoration (Premium Look)
+  static BoxDecoration dashboardGlassDecoration(BuildContext context, {Color? color}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = color ?? (isDark ? AppColors.darkSurface : Colors.white);
+    
+    return BoxDecoration(
+      color: baseColor.withValues(alpha: 0.75), // Translucent color
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(
+        color: Colors.white.withValues(alpha: isDark ? 0.05 : 0.4),
+        width: 1.5,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: (isDark ? Colors.black : Colors.blueGrey).withValues(alpha: 0.1),
+          blurRadius: 20,
+          offset: const Offset(0, 8),
         ),
       ],
     );

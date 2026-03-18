@@ -7,6 +7,7 @@ import '../res/colors.dart';
 import '../res/styles.dart';
 import '../view_models/home_controller.dart';
 import '../widgets/primary_button.dart';
+import '../constants/bmi_constants.dart';
 
 class ResultView extends GetView<HomeController> {
   final double bmi;
@@ -78,19 +79,19 @@ class ResultView extends GetView<HomeController> {
                         ],
                       ),
                       
-                      const Column(
+                      Column(
                         children: [
-                          Text(
+                          const Text(
                             "Normal BMI range:",
                             style: TextStyle(
                               color: AppColors.textSecondary,
                               fontSize: 14,
                             ),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Text(
-                            "18.5 - 25 kg/m2",
-                            style: TextStyle(
+                            "${BmiConstants.underweightThreshold} - ${BmiConstants.normalThreshold} kg/m2",
+                            style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -118,10 +119,10 @@ class ResultView extends GetView<HomeController> {
                                 color: Get.theme.scaffoldBackgroundColor, 
                               ),
                               ranges: <GaugeRange>[
-                                GaugeRange(startValue: 10, endValue: 18.5, color: AppColors.accent),
-                                GaugeRange(startValue: 18.5, endValue: 25, color: AppColors.success),
-                                GaugeRange(startValue: 25, endValue: 30, color: AppColors.warning),
-                                GaugeRange(startValue: 30, endValue: 40, color: AppColors.error),
+                                GaugeRange(startValue: 10, endValue: BmiConstants.underweightThreshold, color: AppColors.accent),
+                                GaugeRange(startValue: BmiConstants.underweightThreshold, endValue: BmiConstants.normalThreshold, color: AppColors.success),
+                                GaugeRange(startValue: BmiConstants.normalThreshold, endValue: BmiConstants.overweightThreshold, color: AppColors.warning),
+                                GaugeRange(startValue: BmiConstants.overweightThreshold, endValue: 40, color: AppColors.error),
                               ],
                               pointers: <GaugePointer>[
                                 NeedlePointer(

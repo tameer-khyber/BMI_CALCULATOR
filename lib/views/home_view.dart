@@ -100,7 +100,17 @@ class HomeView extends GetView<HomeController> {
               ),
               child: IconButton(
                 icon: Icon(Icons.notifications_outlined, color: Theme.of(context).iconTheme.color),
-                onPressed: () {},
+                onPressed: () {
+                  Get.snackbar(
+                    'notifications'.tr,
+                    'no_new_notifications'.tr,
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: AppColors.primary,
+                    colorText: Colors.white,
+                    margin: const EdgeInsets.all(20),
+                    icon: const Icon(Icons.notifications, color: Colors.white),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -172,9 +182,16 @@ class HomeView extends GetView<HomeController> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    bmi.toStringAsFixed(1),
-                    style: AppStyles.bmiBigNumber,
+                  TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 0, end: bmi),
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, child) {
+                      return Text(
+                        value.toStringAsFixed(1),
+                        style: AppStyles.bmiBigNumber,
+                      );
+                    },
                   ),
                   const SizedBox(height: 10),
                   Container(

@@ -25,8 +25,9 @@ class InsightModel {
 
 class HealthInsightsController extends GetxController {
   final RxList<InsightModel> insights = <InsightModel>[].obs;
+  final RxList<InsightModel> filteredInsights = <InsightModel>[].obs;
   final RxBool isLoading = true.obs;
-  final RxBool isOnline = false.obs;
+  final RxString searchQuery = ''.obs;
 
   @override
   void onInit() {
@@ -34,33 +35,27 @@ class HealthInsightsController extends GetxController {
     loadInsights();
   }
 
-  Future<void> loadInsights() async {
-    isLoading.value = true;
-    try {
-      // Check connectivity
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        isOnline.value = true;
-        await _fetchOnlineData();
-      } else {
-        isOnline.value = false;
-        _loadOfflineData();
-      }
-    } on SocketException catch (_) {
-      isOnline.value = false;
-      _loadOfflineData();
-    } catch (e) {
-      // Fallback
-      isOnline.value = false;
-      _loadOfflineData();
-    } finally {
-      isLoading.value = false;
+  void search(String query) {
+    searchQuery.value = query;
+    if (query.isEmpty) {
+      filteredInsights.value = insights;
+    } else {
+      filteredInsights.value = insights.where((insight) {
+        return insight.title.toLowerCase().contains(query.toLowerCase()) || 
+               insight.subtitle.toLowerCase().contains(query.toLowerCase());
+      }).toList();
     }
   }
 
-  void _loadOfflineData() {
-    // 9+ Offline Topics
-    insights.value = [
+  Future<void> loadInsights() async {
+    isLoading.value = true;
+    _loadData();
+    isLoading.value = false;
+  }
+
+  void _loadData() {
+    // Consolidated Static List equivalent to Real Data
+    final allData = [
       InsightModel(
         title: 'Nutrition Basics',
         subtitle: 'Eat well, live well',
@@ -142,15 +137,6 @@ class HealthInsightsController extends GetxController {
         imagePath: 'assets/images/mindfulness.png',
         description: 'Techniques to improve concentration and reduce brain fog.',
       ),
-    ];
-  }
-
-  Future<void> _fetchOnlineData() async {
-    // Simulate API delay
-    await Future.delayed(const Duration(seconds: 1));
-    
-    // Simulated Online Data - normally this would come from an API
-    insights.value = [
       InsightModel(
         title: 'Latest Superfoods',
         subtitle: 'Trending Now',
@@ -233,5 +219,7 @@ class HealthInsightsController extends GetxController {
         description: 'Understanding REM cycles and how to optimize them.',
       ),
     ];
+    insights.value = allData;
+    filteredInsights.value = allData;
   }
 }

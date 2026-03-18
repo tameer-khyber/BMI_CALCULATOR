@@ -55,6 +55,7 @@ class HealthInsightsView extends StatelessWidget {
                       ],
                     ),
                       child: TextField(
+                        onChanged: controller.search,
                         decoration: InputDecoration(
                           icon: const Icon(Icons.search, color: AppColors.textSecondary),
                           hintText: 'search_placeholder'.tr,
@@ -81,9 +82,9 @@ class HealthInsightsView extends StatelessWidget {
                         crossAxisSpacing: 15,
                         childAspectRatio: 0.85,
                       ),
-                      itemCount: controller.insights.length,
+                      itemCount: controller.filteredInsights.length,
                       itemBuilder: (context, index) {
-                        final item = controller.insights[index];
+                        final item = controller.filteredInsights[index];
                         return _buildCategoryCard(
                           item.title,
                           item.subtitle,

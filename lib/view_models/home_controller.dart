@@ -2,6 +2,10 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../res/colors.dart';
 import 'history_controller.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/bmi_calculator_service.dart';
+import '../constants/bmi_constants.dart';
 
 enum Gender { male, female }
 enum LengthUnit { cm, ft }
@@ -16,13 +20,79 @@ class HomeController extends GetxController {
   
   // Profile Data
   var targetWeight = 65.0.obs;
-  var targetBmi = 21.5.obs;
+  var targetBmi = BmiConstants.targetBmiDefault.obs;
   var notificationsEnabled = true.obs;
-  var userName = "Alex Thompson".obs;
-  var userAge = 28.obs;
+  var userName = "".obs;
+  var userAge = 25.obs;
   var userGender = "Male".obs;
+  var profileImagePath = "".obs;
+
+  final box = GetStorage();
+
+  /// Returns a storage key scoped to the current Firebase user's UID,
+  /// so each user's data is completely isolated on-device.
+  String _key(String name) {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
+    return '${uid}_$name';
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadUserProfile();
+  }
+
+  /// Loads all profile data for the currently signed-in user.
+  /// Call this whenever the active user changes (login / account switch).
+  void loadUserProfile() {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    // Use Firebase Auth display name as the canonical name source —
+    // it is set during registration and is consistent across devices.
+    final firebaseName = firebaseUser?.displayName ?? '';
+
+    userName.value = box.read(_key('userName')) ?? firebaseName;
+    profileImagePath.value = box.read(_key('profileImagePath')) ?? '';
+    userAge.value = box.read(_key('userAge')) ?? 25;
+    userGender.value = box.read(_key('userGender')) ?? 'Male';
+    targetWeight.value = box.read(_key('targetWeight')) ?? 65.0;
+    targetBmi.value = box.read(_key('targetBmi')) ?? BmiConstants.targetBmiDefault;
+  }
 
   // Actions
+  void updateUserName(String name) {
+    if (name.isNotEmpty) {
+      userName.value = name;
+      box.write(_key('userName'), name);
+    }
+  }
+
+  void updateProfileImage(String path) {
+    profileImagePath.value = path;
+    box.write(_key('profileImagePath'), path);
+  }
+
+  void updateUserAge(int newAge) {
+    userAge.value = newAge;
+    box.write(_key('userAge'), newAge);
+  }
+
+  void updateUserGender(String newGender) {
+    if (newGender.isNotEmpty) {
+      userGender.value = newGender;
+      box.write(_key('userGender'), newGender);
+    }
+  }
+
+  void updateTargetWeight(double newTargetWeight) {
+    targetWeight.value = newTargetWeight;
+    box.write(_key('targetWeight'), newTargetWeight);
+  }
+
+  void updateTargetBmi(double newTargetBmi) {
+    targetBmi.value = newTargetBmi;
+    box.write(_key('targetBmi'), newTargetBmi);
+  }
+
   void updateGender(Gender gender) {
     selectedGender.value = gender;
   }
@@ -44,37 +114,19 @@ class HomeController extends GetxController {
   void decrementAge() => age.value > 1 ? age.value-- : null;
 
   final historyController = Get.put(HistoryController());
+  final _bmiService = BmiCalculatorService();
 
   double get calculateBMI {
-    // BMI = kg / m^2
-    double heightInMeters = height.value / 100;
-    final bmi = weight.value / (heightInMeters * heightInMeters);
-    
-    // Save to History
+    return _bmiService.calculateBMI(height.value, weight.value);
+  }
+
+  void saveCurrentBmiToHistory() {
+    final bmi = _bmiService.calculateBMI(height.value, weight.value);
     final status = getBmiStatus(bmi);
     historyController.saveBmi(bmi, weight.value, status);
-    
-    return bmi;
   }
 
-  String getBmiStatus(double bmi) {
-    if (bmi < 18.5) return "Underweight";
-    if (bmi < 25) return "Normal";
-    if (bmi < 30) return "Overweight";
-    return "Obese";
-  }
-
-  Color getBmiColor(double bmi) {
-    if (bmi < 18.5) return AppColors.primaryLight;
-    if (bmi < 25) return AppColors.statusGreen;
-    if (bmi < 30) return AppColors.statusOrange;
-    return AppColors.statusRed;
-  }
-
-  String getBmiAdvice(double bmi) {
-    if (bmi < 18.5) return "You have a lower than normal body weight. You can eat a bit more.";
-    if (bmi < 25) return "You have a normal body weight. Good job!";
-    if (bmi < 30) return "You have a higher than normal body weight. Try to exercise more.";
-    return "You have a much higher than normal body weight. Please consult a doctor.";
-  }
+  String getBmiStatus(double bmi) => _bmiService.getBmiStatus(bmi);
+  Color getBmiColor(double bmi) => _bmiService.getBmiColor(bmi);
+  String getBmiAdvice(double bmi) => _bmiService.getBmiAdvice(bmi);
 }

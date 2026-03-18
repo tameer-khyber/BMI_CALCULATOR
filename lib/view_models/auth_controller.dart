@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../res/routes.dart';
 import '../res/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'home_controller.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -52,6 +53,13 @@ class AuthController extends GetxController {
     if (user == null) {
       Get.offAllNamed(AppRoutes.login);
     } else {
+      // Reload the profile for the newly signed-in user so stale data
+      // from a previous session / different account is never shown.
+      final homeCtrl = Get.isRegistered<HomeController>()
+          ? Get.find<HomeController>()
+          : null;
+      homeCtrl?.loadUserProfile();
+
       Get.offAllNamed(AppRoutes.home);
     }
   }

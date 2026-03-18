@@ -140,7 +140,7 @@ class HistoryView extends StatelessWidget {
                             children: [
                               Icon(Icons.history, size: 60, color: AppColors.textSecondary.withValues(alpha: 0.3)),
                               const SizedBox(height: 10),
-                              Text('no_history'.tr, style: TextStyle(color: AppColors.textSecondary)),
+                              const Text('No history contained', style: TextStyle(color: AppColors.textSecondary)),
                             ],
                           ),
                         );
